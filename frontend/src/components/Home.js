@@ -193,11 +193,14 @@ const Home = () => {
   );
 
   return (
-    <>
+    <div className=" pt-28">
       <Header />
-      <div className="h-full w-full lg:px-28 md:px-2 sm:px-2 ">
+      <div
+        className="h-full w-full lg:px-28 md:px-2 sm:px-2 "
+        style={{ height: "200vh" }}
+      >
         {/* Header Section */}
-        <div className="mt-12 ">
+        <div className=" ">
           <h1 className="font-bold text-2xl">Visitors</h1>
           <p className="text-gray-500">
             All the visitors that are currently on the premises
@@ -246,7 +249,7 @@ const Home = () => {
         </div>
         <Visitorprofile />
       </div>
-    </>
+    </div>
   );
 };
 

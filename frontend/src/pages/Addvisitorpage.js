@@ -3,7 +3,7 @@ import Header from "../components/Header";
 
 const Addvisitorpage = () => {
   return (
-    <div>
+    <div style={{ height: "200vh" }} className="pt-28">
       <Header />
     </div>
   );
