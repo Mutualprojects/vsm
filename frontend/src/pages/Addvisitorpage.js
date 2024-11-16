@@ -5,7 +5,6 @@ const Addvisitorpage = () => {
   return (
     <div>
       <Header />
-      Addvisitorpage
     </div>
   );
 };
