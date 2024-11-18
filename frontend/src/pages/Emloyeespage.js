@@ -9,6 +9,7 @@ const Emloyeespage = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [employees, setEmployees] = useState(null);
 
@@ -75,7 +76,7 @@ const Emloyeespage = () => {
       alert("user Created Successfully");
       GetEmployees();
     }
-    
+
     console.log("Form Submitted:", formData);
     handleClose(); // Close the modal after submitting
   };
@@ -131,7 +132,7 @@ const Emloyeespage = () => {
 
       {/* <hr /> */}
 
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={handleClose} className="bg-sky-300">
         <Modal.Header>
           <Modal.Title>
             <div className="font-bold">Add a New Employee</div>
@@ -223,11 +224,20 @@ const Emloyeespage = () => {
         </Modal.Footer>
       </Modal>
 
-      <div>
+      <div className="flex justify-evenly">
         {employees?.map((employee) => (
-          <div key={employee._id}>
-            <img alt="gh" src={employee.profile}></img>
-            <div>{employee.name}</div>
+          <div key={employee._id} className="card">
+            <img
+              className="w-24 h-24 rounded-full object-cover flex justify-center align-content-center"
+              alt="gh"
+              src={employee.profile}
+            ></img>
+            <div>
+              <h5>Name:{employee.name}</h5>
+              <h5>Email:{employee.email}</h5>
+              <p>Employ ID:{employee.empid}</p>
+              <p>Mobile NO:{employee.mobile}</p>
+            </div>
           </div>
         ))}
       </div>
