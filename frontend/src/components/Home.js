@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { SelectPicker } from "rsuite";
-import { ButtonToolbar, Input, InputGroup } from "rsuite";
+import { Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import "rsuite/dist/rsuite.min.css";
-import { Dropdown } from "rsuite";
+
 import Visitorprofile from "./Visitorprofile";
 
 import Header from "../components/Header";
@@ -26,11 +26,11 @@ const Home = () => {
     Checkuser();
   });
 
-  const styles = {
-    marginBottom: 10,
-    height: 40,
-    width: 700,
-  };
+  // const styles = {
+  //   marginBottom: 10,
+  //   height: 40,
+  //   width: 700,
+  // };
   const data = ["Checked-In", "Pending"].map((item) => ({
     label: item,
     value: item,
@@ -40,28 +40,6 @@ const Home = () => {
     label: item,
     value: item,
   }));
-
-  // const CustomDropdown = ({ ...props }) => (
-  //   <div className="w-full md:w-48">
-  //     <Dropdown {...props} className="bg-slate-100 w-full mb-2">
-  //       <Dropdown.Item className="bg-slate-200 p-2 w-full rounded">
-  //         <Input className="w-full" placeholder="Search Here" />
-  //       </Dropdown.Item>
-  //       <Dropdown.Item>Checked-IN</Dropdown.Item>
-  //       <Dropdown.Item>Pending...</Dropdown.Item>
-  //     </Dropdown>
-  //   </div>
-  // );
-
-  // const Purpose = ({ ...props }) => (
-  //   <Dropdown {...props} className="w-full md:w-48 bg-slate-100">
-  //     <Dropdown.Item>
-  //       <Input className="w-full" placeholder="Search Here" />
-  //     </Dropdown.Item>
-  //     <Dropdown.Item>Business</Dropdown.Item>
-  //     <Dropdown.Item>Personal</Dropdown.Item>
-  //   </Dropdown>
-  // );
 
   return (
     <div className=" pt-28">
@@ -107,10 +85,6 @@ const Home = () => {
 
           {/* Dropdown Section */}
           <div className="flex flex-col  md:flex-row md:justify-around gap-4 px-2 md:w-96 ">
-            {/* Status Dropdown */}
-            {/* <ButtonToolbar className="w-full md:w-48  ">
-              <CustomDropdown title="Status" trigger={["click", "hover"]} />
-            </ButtonToolbar> */}
             <SelectPicker
               size="md"
               placeholder="Status"
@@ -118,10 +92,6 @@ const Home = () => {
               style={styles1}
             />
 
-            {/* Purpose Dropdown */}
-            {/* <ButtonToolbar className="w-full md:w-48 ">
-              <Purpose title="Purpose" trigger={["click", "hover"]} />
-            </ButtonToolbar> */}
             <SelectPicker
               size="md"
               placeholder="Purpose"
