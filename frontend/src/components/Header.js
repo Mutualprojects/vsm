@@ -50,21 +50,6 @@ const Header = () => {
     };
   }, []);
 
-  const navLinks = ["/", "/employees", "/addvisitor"];
-
-  const renderNavLinks = () =>
-    navLinks.map((path, index) => (
-      <Link
-        key={index}
-        to={path}
-        className={location.pathname === path ? "active-link" : ""}
-        style={{ textDecoration: "none" }}
-        onClick={onCloseDrawer} // Close drawer on mobile
-      >
-        {path === "/" ? "Dashboard" : path.replace("/", "")}
-      </Link>
-    ));
-
   return (
     <div className="bg-neutral-300 fixed-top " style={{ zIndex: 1000 }}>
       <div
@@ -82,7 +67,35 @@ const Header = () => {
           {/* Navigation & Profile */}
           <div className="flex justify-between items-center gap-4 sm:gap-6 lg:gap-10">
             {/* Navigation Links for Large Screens */}
-            <div className="hidden lg:flex gap-10">{renderNavLinks()}</div>
+            <div className="hidden lg:flex gap-10">
+              {/* Define each link manually */}
+              <Link
+                to="/"
+                className={location.pathname === "/" ? "active-link" : ""}
+                style={{ textDecoration: "none" }}
+              >
+                Dashboard
+              </Link>
+              <Link
+                to="/employees"
+                className={
+                  location.pathname === "/employees" ? "active-link" : ""
+                }
+                style={{ textDecoration: "none" }}
+              >
+                Employees
+              </Link>
+              <Link
+                to="/addvisitor"
+                className={
+                  location.pathname === "/addvisitor" ? "active-link" : ""
+                }
+                style={{ textDecoration: "none" }}
+              >
+                Add Visitor
+              </Link>
+            </div>
+
             <div className="cursor-pointer" ref={profileRef}>
               {/* Profile Icon */}
               <CgProfile size={30} onClick={handleToggle} />
@@ -127,7 +140,37 @@ const Header = () => {
                 open={open}
                 width={300}
               >
-                <div className="flex flex-col gap-4">{renderNavLinks()}</div>
+                <div className="flex flex-col gap-4">
+                  {/* Define each link manually for mobile */}
+                  <Link
+                    to="/"
+                    className={location.pathname === "/" ? "active-link" : ""}
+                    style={{ textDecoration: "none" }}
+                    onClick={onCloseDrawer} // Close drawer on mobile
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/employees"
+                    className={
+                      location.pathname === "/employees" ? "active-link" : ""
+                    }
+                    style={{ textDecoration: "none" }}
+                    onClick={onCloseDrawer}
+                  >
+                    Employees
+                  </Link>
+                  <Link
+                    to="/addvisitor"
+                    className={
+                      location.pathname === "/addvisitor" ? "active-link" : ""
+                    }
+                    style={{ textDecoration: "none" }}
+                    onClick={onCloseDrawer}
+                  >
+                    Add Visitor
+                  </Link>
+                </div>
               </Drawer>
             </div>
           </div>
