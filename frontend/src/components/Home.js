@@ -155,6 +155,7 @@
 
 // export default Home;
 import React from "react";
+import { SelectPicker } from "rsuite";
 import { ButtonToolbar, Input, InputGroup } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import "rsuite/dist/rsuite.min.css";
@@ -169,28 +170,37 @@ const Home = () => {
     height: 40,
     width: 700,
   };
+  const data = ["Checked-In", "Pending"].map((item) => ({
+    label: item,
+    value: item,
+  }));
+  const styles1 = { width: 224, display: "block", marginBottom: 10 };
+  const data1 = ["Business", "Personal", "interview"].map((item) => ({
+    label: item,
+    value: item,
+  }));
 
-  const CustomDropdown = ({ ...props }) => (
-    <div className="w-full md:w-48">
-      <Dropdown {...props} className="bg-slate-100 w-full mb-2">
-        <Dropdown.Item className="bg-slate-200 p-2 w-full rounded">
-          <Input className="w-full" placeholder="Search Here" />
-        </Dropdown.Item>
-        <Dropdown.Item>Checked-IN</Dropdown.Item>
-        <Dropdown.Item>Pending...</Dropdown.Item>
-      </Dropdown>
-    </div>
-  );
+  // const CustomDropdown = ({ ...props }) => (
+  //   <div className="w-full md:w-48">
+  //     <Dropdown {...props} className="bg-slate-100 w-full mb-2">
+  //       <Dropdown.Item className="bg-slate-200 p-2 w-full rounded">
+  //         <Input className="w-full" placeholder="Search Here" />
+  //       </Dropdown.Item>
+  //       <Dropdown.Item>Checked-IN</Dropdown.Item>
+  //       <Dropdown.Item>Pending...</Dropdown.Item>
+  //     </Dropdown>
+  //   </div>
+  // );
 
-  const Purpose = ({ ...props }) => (
-    <Dropdown {...props} className="w-full md:w-48 bg-slate-100">
-      <Dropdown.Item>
-        <Input className="w-full" placeholder="Search Here" />
-      </Dropdown.Item>
-      <Dropdown.Item>Business</Dropdown.Item>
-      <Dropdown.Item>Personal</Dropdown.Item>
-    </Dropdown>
-  );
+  // const Purpose = ({ ...props }) => (
+  //   <Dropdown {...props} className="w-full md:w-48 bg-slate-100">
+  //     <Dropdown.Item>
+  //       <Input className="w-full" placeholder="Search Here" />
+  //     </Dropdown.Item>
+  //     <Dropdown.Item>Business</Dropdown.Item>
+  //     <Dropdown.Item>Personal</Dropdown.Item>
+  //   </Dropdown>
+  // );
 
   return (
     <div className=" pt-28">
@@ -222,8 +232,8 @@ const Home = () => {
             </InputGroup>
           </div>
 
-          <div className="w-full hidden lg:block md:w-96">
-            <InputGroup className="" style={{ width: 700 }}>
+          <div className="w-full hidden lg:block md:w-full">
+            <InputGroup className=" md:w-full" style={{ width: "100%" }}>
               <InputGroup.Addon className="bg-slate-100">
                 <SearchIcon />
               </InputGroup.Addon>
@@ -237,14 +247,26 @@ const Home = () => {
           {/* Dropdown Section */}
           <div className="flex flex-col  md:flex-row md:justify-around gap-4 px-2 md:w-96 ">
             {/* Status Dropdown */}
-            <ButtonToolbar className="w-full md:w-48  ">
+            {/* <ButtonToolbar className="w-full md:w-48  ">
               <CustomDropdown title="Status" trigger={["click", "hover"]} />
-            </ButtonToolbar>
+            </ButtonToolbar> */}
+            <SelectPicker
+              size="md"
+              placeholder="Status"
+              data={data}
+              style={styles1}
+            />
 
             {/* Purpose Dropdown */}
-            <ButtonToolbar className="w-full md:w-48 ">
+            {/* <ButtonToolbar className="w-full md:w-48 ">
               <Purpose title="Purpose" trigger={["click", "hover"]} />
-            </ButtonToolbar>
+            </ButtonToolbar> */}
+            <SelectPicker
+              size="md"
+              placeholder="Purpose"
+              data={data1}
+              style={styles1}
+            />
           </div>
         </div>
         <Visitorprofile />
