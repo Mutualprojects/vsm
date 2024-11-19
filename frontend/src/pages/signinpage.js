@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie"; // Import useCookies hook from react-cookie
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slice";
 
 const Signin = () => {
@@ -19,34 +19,53 @@ const Signin = () => {
     setLoading(true);
     setErrorMessage(""); // Clear any previous error messages
 
-    // Make a POST request to login
-    const response = await axios.post(
-      "http://127.0.0.1:8090/api/login", // API endpoint for login
-      {
-        email: email,
-        password: password,
-      },
-      {
-        withCredentials: true, // This is essential to send cookies with requests
+    try {
+      // Make a POST request to login
+      const response = await axios.post(
+        "http://127.0.0.1:8090/api/login", // API endpoint for login
+        {
+          email: email,
+          password: password,
+        },
+        {
+          withCredentials: true, // This is essential to send cookies with requests
+        }
+      );
+
+      const responseData = response.data;
+
+      if (responseData.success) {
+        console.log("Login Successful", response.data);
+
+        dispatch(setUser(response?.data?.user));
+
+        // Store the token in a cookie with an expiration time (e.g., 7 days)
+        setCookie("token", responseData.token, {
+          path: "/",
+          expires: new Date(Date.now() + 86400000), // 86400000 ms = 1 day
+        });
+
+        navigate("/"); // Navigate to dashboard on successful login
+      } else {
+        setErrorMessage(responseData.message || "Login failed");
       }
-    );
-
-    const responseData = response.data;
-
-    if (responseData.success) {
-      console.log("Login Successful", response.data);
-
-      dispatch(setUser(response?.data?.user));
-
-      // Store the token in a cookie with an expiration time (e.g., 7 days)
-
-      // Optionally, you can store the user data in localStorage as well
-      // localStorage.setItem("user", JSON.stringify(responseData.user));
-
-      navigate("/"); // Navigate to dashboard on successful login
-    } else {
-      setErrorMessage(responseData.message || "Login failed");
+    } catch (error) {
+      setErrorMessage("An error occurred. Please try again.");
+      console.error("Login error:", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // Clear error message whenever the user starts typing
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+    setErrorMessage(""); // Clear the error when the user modifies the input
   };
 
   return (
@@ -71,10 +90,11 @@ const Signin = () => {
             <input
               type="email"
               id="email"
+              name="email"
               className="w-full p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleInputChange} // Use the common handler for both inputs
               required
             />
           </div>
@@ -89,10 +109,11 @@ const Signin = () => {
             <input
               type="password"
               id="password"
+              name="password"
               className="w-full p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleInputChange} // Use the common handler for both inputs
               required
             />
           </div>

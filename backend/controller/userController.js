@@ -1,17 +1,38 @@
-async function userDetailsController(req, res) {
+const bcrypt = require("bcryptjs");
+const userModel = require("../models/Usermodel");
+
+async function UserSignup(req, res) {
   try {
-    const token = req.cookies.token || "";
-    console.log("Token from cookies:", token); // Log the token for debugging
+    const { name, password, email } = req.body;
 
-    const user = await getuserDetailsfromtoken(token);
+    const user = await userModel.findOne({ email });
 
-    return res.status(200).json({
-      message: "User details",
-      data: user,
+    if (user) {
+      return res.json({
+        message: "User already exists",
+        success: false,
+        error: true,
+      });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = {
+      name,
+      email,
+      password: hashedPassword,
+    };
+
+    const saveUser = await userModel.create(newUser);
+
+    return res.status(201).json({
+      message: "User created successfully",
       success: true,
+      data: saveUser,
     });
   } catch (error) {
-    console.error("Error retrieving user details:", error);
+    console.error("Error creating user:", error);
     return res.status(500).json({
       message: error.message || error,
       error: true,
@@ -19,4 +40,4 @@ async function userDetailsController(req, res) {
   }
 }
 
-module.exports = userDetailsController;
+module.exports = UserSignup;

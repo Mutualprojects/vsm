@@ -5,7 +5,7 @@ const getuserDetailsfromtoken = require("./ActivatonToken");
 async function userDetailsController(req, res) {
   try {
     // Get token from the request cookies
-    const token = req.cookies.token || ""; // Make sure the token is in the cookies
+    const { token } = req.body; // Make sure the token is in the cookies
 
     // If no token is provided, return a 401 Unauthorized response
 

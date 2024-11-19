@@ -23,7 +23,7 @@ async function USersign(req, res) {
     const existingUser = await userModel.findOne({ email });
 
     if (!existingUser) {
-      return res.status(401).json({
+      return res.status(201).json({
         success: false,
         message: "Invalid credentials",
         error: true,
@@ -33,7 +33,7 @@ async function USersign(req, res) {
     const checkPassword = await bcrypt.compare(password, existingUser.password);
 
     if (!checkPassword) {
-      return res.status(401).json({
+      return res.status(201).json({
         success: false,
         message: "Invalid credentials",
         error: true,
