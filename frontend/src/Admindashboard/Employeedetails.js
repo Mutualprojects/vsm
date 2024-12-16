@@ -17,6 +17,7 @@ import { Button, Modal } from "rsuite";
 import Editemployee from "./Editemployee";
 import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
 import Assignroletoemp from "./assignroletoemp";
+import SummayApi from "../helper/routes";
 
 const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
   position: "absolute",
@@ -90,9 +91,7 @@ function Adminemployeedetails() {
   // Fetch employee details by ID
   const GEtemployee = async () => {
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8090/api/getempbyid/${query}`
-      );
+      const response = await axios.get(`${SummayApi.getempbyid.url}/${query}`);
       const employeeData = response.data.data;
       setEmployee(employeeData);
       if (employeeData?.length > 0) {
@@ -110,7 +109,7 @@ function Adminemployeedetails() {
   //get user by primary id
   const getuserbyid = async () => {
     const response = await axios.get(
-      `http://127.0.0.1:8090/api/getuserbyprimary/${query}`
+      `${SummayApi.getuserbyprimary.url}/${query}`
     );
 
     if (response.data?.success) {
@@ -125,7 +124,7 @@ function Adminemployeedetails() {
     try {
       if (empname) {
         const response = await axios.get(
-          `http://127.0.0.1:8090/api/getvisitorbyname/${empname}`
+          `${SummayApi.getvisitorbyname.url}/${empname}`
         );
         setVisitors(response.data.data); // Set visitors data
       }
@@ -184,14 +183,14 @@ function Adminemployeedetails() {
 
   const handleDeleteok = async () => {
     const response = await axios.delete(
-      `http://127.0.0.1:8090/api/deleteemployeebyid/${query}`
+      `${SummayApi.deleteemployeebyid.url}/${query}`
     );
 
     if (response.data.success) {
       alert("employee deleted");
       navigate("/adminemployees", { state: { refresh: true } });
       handledeletemodalclose();
-      await axios.get(`http://127.0.0.1:8090/api/deleteuserbyprimary/${query}`);
+      await axios.get(`${SummayApi.deleteuserbyprimary.url}/${query}`);
     }
   };
 

@@ -4,7 +4,8 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slice";
-import vmssign from "../../src/images/5blog-1.png"
+import vmssign from "../../src/images/5blog-1.png";
+import SummayApi from "../helper/routes";
 
 const Signin = () => {
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const Signin = () => {
     try {
       // Make a POST request to login
       const response = await axios.post(
-        "http://127.0.0.1:8090/api/login",
+        SummayApi.login.url,
         {
           email: email,
           password: password,
@@ -123,102 +124,98 @@ const Signin = () => {
   };
 
   return (
-  
-<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4  bg-[url('https://img.freepik.com/free-vector/blurred-background-with-light-colors_1034-245.jpg')] bg-cover bg-center h-64 w-fulls ">
-  <div className="flex flex-col md:flex-row items-center justify-center max-w-6xl w-full">
-    {/* Image Section */}
-    <div className="flex-shrink-0 mb-6 md:mb-0 md:w-1/2 w-full h-full flex items-center justify-center">
-      <img
-        src={vmssign}
-        alt="Sign In"
-        className="w-full lg:h-96 sm:h-64 md:h-96 object-cover"
-      />
-    </div>
-
-    {/* Form Section */}
-    <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md md:w-1/2 h-full flex flex-col justify-center">
-      <h2 className="text-2xl font-semibold text-center mb-6">Sign In</h2>
-
-      {/* General error message */}
-      {generalError && (
-        <div className="bg-red-100 text-red-800 p-2 mb-4 rounded-md">
-          {generalError}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-10">
-        {/* Email Input */}
-        <div className="space-y-2">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className={`w-full p-2 mt-2 border ${
-              emailError ? "border-red-500" : "border-gray-300"
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200`}
-            placeholder="Enter your email"
-            value={email}
-            onChange={handleEmailChange}
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4  bg-[url('https://img.freepik.com/free-vector/blurred-background-with-light-colors_1034-245.jpg')] bg-cover bg-center h-64 w-fulls ">
+      <div className="flex flex-col md:flex-row items-center justify-center max-w-6xl w-full">
+        {/* Image Section */}
+        <div className="flex-shrink-0 mb-6 md:mb-0 md:w-1/2 w-full h-full flex items-center justify-center">
+          <img
+            src={vmssign}
+            alt="Sign In"
+            className="w-full lg:h-96 sm:h-64 md:h-96 object-cover"
           />
-          {/* Email error */}
-          <div className="h-5">
-            {emailError && (
-              <p className="text-red-600 text-sm mt-1">{emailError}</p>
-            )}
-          </div>
         </div>
 
-        {/* Password Input */}
-        <div className="space-y-2">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className={`w-full p-2 mt-2 border ${
-              passwordError ? "border-red-500" : "border-gray-300"
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200`}
-            placeholder="Enter your password"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-          {/* Password error */}
-          <div className="h-5">
-            {passwordError && (
-              <p className="text-red-600 text-sm mt-1">{passwordError}</p>
-            )}
-          </div>
-        </div>
+        {/* Form Section */}
+        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md md:w-1/2 h-full flex flex-col justify-center">
+          <h2 className="text-2xl font-semibold text-center mb-6">Sign In</h2>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className={`w-full py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200 ${
-            (loading || emailError || passwordError) &&
-            "opacity-50 cursor-not-allowed"
-          }`}
-          disabled={loading || emailError || passwordError}
-        >
-          {loading ? "Signing In..." : "Sign In"}
-        </button>
-      </form>
+          {/* General error message */}
+          {generalError && (
+            <div className="bg-red-100 text-red-800 p-2 mb-4 rounded-md">
+              {generalError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-10">
+            {/* Email Input */}
+            <div className="space-y-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className={`w-full p-2 mt-2 border ${
+                  emailError ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200`}
+                placeholder="Enter your email"
+                value={email}
+                onChange={handleEmailChange}
+              />
+              {/* Email error */}
+              <div className="h-5">
+                {emailError && (
+                  <p className="text-red-600 text-sm mt-1">{emailError}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Password Input */}
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className={`w-full p-2 mt-2 border ${
+                  passwordError ? "border-red-500" : "border-gray-300"
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200`}
+                placeholder="Enter your password"
+                value={password}
+                onChange={handlePasswordChange}
+              />
+              {/* Password error */}
+              <div className="h-5">
+                {passwordError && (
+                  <p className="text-red-600 text-sm mt-1">{passwordError}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className={`w-full py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200 ${
+                (loading || emailError || passwordError) &&
+                "opacity-50 cursor-not-allowed"
+              }`}
+              disabled={loading || emailError || passwordError}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
-
-    
   );
 };
 

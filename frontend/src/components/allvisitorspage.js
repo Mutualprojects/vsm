@@ -11,6 +11,7 @@ import { setUser } from "../redux/slice";
 import { useNavigate } from "react-router-dom";
 
 import * as XLSX from "xlsx"; // Import the xlsx library
+import SummayApi from "../helper/routes";
 
 const Allvisitorspage = ({ getload }) => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Allvisitorspage = ({ getload }) => {
 
     // Fetch user data
     const GetUser = async () => {
-      const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
+      const response = await axios.post(SummayApi.getuser.url, {
         token: cookies.token,
       });
       const getuserData = response.data;
@@ -46,12 +47,10 @@ const Allvisitorspage = ({ getload }) => {
 
   const getvisitors = async () => {
     setLoading(true); // Set loading state to true when starting the fetch
-    await axios
-      .get("http://127.0.0.1:8090/api/getvisitors")
-      .then((response) => {
-        setVisitors(response.data);
-        setLoading(false); // Set loading state to false when data is fetched
-      });
+    await axios.get(SummayApi.getvisitors.url).then((response) => {
+      setVisitors(response.data);
+      setLoading(false); // Set loading state to false when data is fetched
+    });
   };
 
   useEffect(() => {

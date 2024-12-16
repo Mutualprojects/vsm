@@ -19,6 +19,7 @@ import Adminheader from "./Adminheader";
 import Adduser from "./Adduser";
 import Userdetailsmodel from "./Userdetailsmodel";
 import { setUser } from "../redux/slice";
+import SummayApi from "../helper/routes";
 
 const Adminusers = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Adminusers = () => {
 
     // Fetch user data using token
     const GetUser = async () => {
-      const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
+      const response = await axios.post(SummayApi.getuser.url, {
         token: cookies.token,
       });
 
@@ -81,7 +82,7 @@ const Adminusers = () => {
   const GetEmployees = async () => {
     setLoading(true);
     try {
-      await axios.get("http://127.0.0.1:8090/api/getusers").then((response) => {
+      await axios.get(SummayApi.getusers.url).then((response) => {
         setEmployees(response.data.data);
         setLoading(false);
       });
@@ -101,12 +102,9 @@ const Adminusers = () => {
       GetEmployees();
     } else {
       // If there is a search query, fetch filtered employees based on query
-      const response = await axios.post(
-        "http://127.0.0.1:8090/api/getuserbyname",
-        {
-          query: value,
-        }
-      );
+      const response = await axios.post(SummayApi.getuserbyname.url, {
+        query: value,
+      });
 
       setEmployees(response.data); // Update employees with search results
     }
@@ -152,7 +150,7 @@ const Adminusers = () => {
 
   const handleUSerdelete = async () => {
     const response = await axios.delete(
-      `http://127.0.0.1:8090/api/deleteuserbyid/${userid}`
+      `${SummayApi.deleteuserbyid.url}/${userid}`
     );
     if (response.data.success) {
       messageApi.open({

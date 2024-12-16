@@ -6,6 +6,7 @@ import Webcam from "react-webcam"; // Import react-webcam
 import { MdOutlineFlipCameraIos } from "react-icons/md";
 import { Loader } from "rsuite";
 import { LoadingOutlined } from "@ant-design/icons";
+import SummayApi from "../helper/routes";
 
 const AddVisitorPage = ({
   handleClose,
@@ -192,7 +193,7 @@ const AddVisitorPage = ({
   // Fetch employees from API
   const GetEmployees = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8090/api/employees");
+      const response = await axios.get(SummayApi.employees.url);
       setEmployees(response.data); // Assuming response.data is an array of employees
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -247,10 +248,7 @@ const AddVisitorPage = ({
 
     if (valid) {
       setSaveloader(true);
-      const response = await axios.post(
-        "http://127.0.0.1:8090/api/addvisitor",
-        formData
-      );
+      const response = await axios.post(SummayApi.addvisitor.url, formData);
 
       const responseData = response.data;
 

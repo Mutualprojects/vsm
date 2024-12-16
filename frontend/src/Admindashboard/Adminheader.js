@@ -12,6 +12,7 @@ import { Button, Modal } from "rsuite";
 import Addvisitorpage from "../pages/Addvisitorpage";
 import axios from "axios";
 import PlusRoundIcon from "@rsuite/icons/PlusRound";
+import SummayApi from "../helper/routes";
 
 const Adminheader = ({ Getvisitors, getload }) => {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ const Adminheader = ({ Getvisitors, getload }) => {
 
     // Fetch user data using token
     const GetUser = async () => {
-      const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
+      const response = await axios.post(SummayApi.getuser.url, {
         token: cookies.token,
       });
 

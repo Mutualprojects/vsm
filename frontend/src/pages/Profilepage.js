@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Adminheader from "../Admindashboard/Adminheader";
 import { LoadingOutlined } from "@ant-design/icons";
+import SummayApi from "../helper/routes";
 
 // Custom Field Component for Formik
 const Field = ({ error, touched, ...rest }) => {
@@ -57,7 +58,7 @@ function Profilepage() {
   const [saveloader, setSaveloader] = useState(false);
 
   const GetUser = async () => {
-    const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
+    const response = await axios.post(SummayApi.getuser.url, {
       token: cookies.token,
     });
 
@@ -87,7 +88,7 @@ function Profilepage() {
       const { oldPassword, password, confirmpassword } = values;
 
       const response = await axios.put(
-        `http://127.0.0.1:8090/api/resetpassword/${user._id}`,
+        `${SummayApi.resetpassword.url}/${user._id}`,
         {
           oldPassword: oldPassword,
           password: password,

@@ -16,6 +16,7 @@ import { useCookies } from "react-cookie";
 import Addemployee from "../pages/aadEmployee";
 import { message, Skeleton } from "antd";
 import Adminheader from "./Adminheader";
+import SummayApi from "../helper/routes";
 
 const AdminEmployees = () => {
   const navigate = useNavigate();
@@ -62,12 +63,10 @@ const AdminEmployees = () => {
   const GetEmployees = async () => {
     setLoading(true);
     try {
-      await axios
-        .get("http://127.0.0.1:8090/api/employees")
-        .then((response) => {
-          setEmployees(response.data);
-          setLoading(false);
-        });
+      await axios.get(SummayApi.employees.url).then((response) => {
+        setEmployees(response.data);
+        setLoading(false);
+      });
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
@@ -84,12 +83,9 @@ const AdminEmployees = () => {
       GetEmployees();
     } else {
       // If there is a search query, fetch filtered employees based on query
-      const response = await axios.post(
-        "http://127.0.0.1:8090/api/searchemployee",
-        {
-          query: value,
-        }
-      );
+      const response = await axios.post(SummayApi.searchemployee.url, {
+        query: value,
+      });
 
       console.log("employee", response.data);
 
