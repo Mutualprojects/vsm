@@ -43,6 +43,7 @@ const AddVisitorPage = ({
 
   const [formData, setFormdata] = useState({
     name: "",
+    email: "",
     mobile: "",
     address: "",
     visitingpurpose: "",
@@ -54,6 +55,7 @@ const AddVisitorPage = ({
 
   const [errors, setErrors] = useState({
     name: "",
+    email: "",
     mobile: "",
     address: "",
     signature: "",
@@ -69,6 +71,14 @@ const AddVisitorPage = ({
 
     if (field === "name" && !value) {
       error = "Name is required";
+    }
+
+    if (field === "email") {
+      if (!value) {
+        error = "Email is required";
+      } else if (!/\S+@\S+\.\S+/.test(value)) {
+        error = "Email is not valid";
+      }
     }
 
     if (field === "mobile") {
@@ -90,6 +100,7 @@ const AddVisitorPage = ({
     if (field === "visitingperson" && !value) {
       error = "visiting person is required";
     }
+
     if (field === "photo" && !value) {
       error = "Photo is required !";
     }
@@ -111,17 +122,17 @@ const AddVisitorPage = ({
     // Name validation
     if (!formData.name) {
       newErrors.name = "Name is required";
-      valid = false;  
+      valid = false;
     }
 
     // Email validation
-    // if (!formData.email) {
-    //   newErrors.email = "Email is required";
-    //   valid = false;
-    // } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    //   newErrors.email = "Email is not valid";
-    //   valid = false;
-    // }
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+      valid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is not valid";
+      valid = false;
+    }
 
     // Mobile validation
     if (!formData.mobile) {
@@ -156,7 +167,7 @@ const AddVisitorPage = ({
     }
 
     if (!formData.signature) {
-      newErrors.signature = "Ssignature is required";
+      newErrors.signature = "Signature is required";
       valid = false;
     }
 
@@ -276,6 +287,7 @@ const AddVisitorPage = ({
         setSaveloader(true);
         setFormdata({
           name: "",
+          emal: "",
           mobile: "",
           address: "",
           signature: "",
@@ -316,7 +328,7 @@ const AddVisitorPage = ({
     const dataUrl = sigCanvas.current.toDataURL(); // Get the base64 image
     setSignatureData(dataUrl); // Update state with signature image
     setErrorMessage(""); // Clear error message
-    setIsSignaturePadVisible(false); // Close the SignaturePad after saving
+    // setIsSignaturePadVisible(false); // Close the SignaturePad after saving
     setFormdata((preve) => {
       return {
         ...preve,
@@ -355,6 +367,22 @@ const AddVisitorPage = ({
           />
           {submitted && errors.name && (
             <div className="text-red-500 mb-1">{errors.name}</div>
+          )}
+        </div>
+        {/*Email */}
+        <div>
+          <label className="font-semibold">Email:</label>
+          <input
+            type="email"
+            name="email"
+            className={`${
+              !errors.email ? "mb-7" : "mb-0 border-danger"
+            } w-full px-3 py-2  border  rounded-md outline-none`}
+            placeholder="Enter Email"
+            onChange={handleChange}
+          />
+          {submitted && errors.email && (
+            <div className="text-red-500 mb-1">{errors.email}</div>
           )}
         </div>
 
@@ -495,33 +523,33 @@ const AddVisitorPage = ({
         )}
 
         <div className="mt-3">
-          <h3>Visitor Signature:</h3>
+          <label className="font-semibold">Signature:</label>{" "}
           {/* Button to open the SignaturePad */}
-          <button
-            type="button"
-            onClick={handleOpenSignaturePad}
-            className="btn btn-secondary w-1/3 "
-          >
-            Add Signature
-          </button>
-
-          {/* Conditional rendering of SignaturePad */}
-          {isSignaturePadVisible && (
-            <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center p-3">
-              <div
-                className="card shadow-lg p-4 w-100"
-                style={{ maxWidth: "600px" }}
+          {!isSignaturePadVisible ? (
+            <div>
+              {" "}
+              <button
+                type="button"
+                onClick={handleOpenSignaturePad}
+                className="btn btn-secondary w-1/3 "
               >
+                Add Signature
+              </button>
+              {submitted && errors.signature && (
+                <div className="text-red-500 mb-3">{errors.signature}</div>
+              )}
+            </div>
+          ) : (
+            <div className="container-fluid w-full d-flex justify-content-center align-items-center p-3">
+              <div className="card shadow-lg p-4 w-full">
                 <h2 className="text-center text-primary mb-4">Sign Here</h2>
 
-                <div className="d-flex justify-content-center mb-4">
+                <div className="d-flex h-60  justify-content-center mb-4">
                   <SignatureCanvas
                     ref={sigCanvas}
                     penColor="black"
                     canvasProps={{
-                      width: 500,
-                      height: 300,
-                      className: "border border-secondary rounded",
+                      className: "border   border-secondary rounded w-full",
                     }}
                   />
                 </div>
@@ -533,18 +561,18 @@ const AddVisitorPage = ({
                   </div>
                 )}
 
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-between w-full gap-2">
                   <button
                     onClick={clearSignature}
                     type="button"
-                    className="btn btn-danger w-100 w-sm-auto mb-2 mb-sm-0"
+                    className="btn btn-danger w-full   "
                   >
                     Clear
                   </button>
                   <button
                     type="button"
                     onClick={handleSaveSignature}
-                    className="btn btn-success w-100 w-sm-auto"
+                    className="btn btn-success w-full"
                   >
                     Save
                   </button>
@@ -575,7 +603,7 @@ const AddVisitorPage = ({
               </div>
             </div>
           )}
-
+          {/* Conditional rendering of SignaturePad */}
           {/* Display the saved signature if available */}
           {signatureData && !isSignaturePadVisible && (
             <div>

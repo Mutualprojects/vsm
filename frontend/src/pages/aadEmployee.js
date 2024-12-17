@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Alert, message, Spin } from "antd";
 import RemindOutlineIcon from "@rsuite/icons/RemindOutline";
 import { LoadingOutlined } from "@ant-design/icons";
-import SummayApi from "../helper/routes";
 
 const Addemployee = ({ handleClose, Getemployees, updated }) => {
   const [filename, setFlename] = useState(null);
@@ -162,7 +161,10 @@ const Addemployee = ({ handleClose, Getemployees, updated }) => {
     if (valid) {
       setSaveloader(true);
       try {
-        const response = await axios.post(SummayApi.regemployee.url, formData);
+        const response = await axios.post(
+          "http://127.0.0.1:8090/api/regemployee",
+          formData
+        );
         const responseData = response.data;
 
         if (responseData.message === "employee already exist") {

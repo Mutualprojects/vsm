@@ -4,6 +4,7 @@ const Visitorschema = mongoose.Schema(
   {
     name: String,
     mobile: String,
+    email: String,
     address: String,
     visitingpurpose: String,
     visitingperson: String,

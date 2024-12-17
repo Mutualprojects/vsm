@@ -233,6 +233,7 @@ const Allvisitorspage = ({ getload }) => {
     </div>
     <div><strong>Name:</strong> ${employee.name}</div>
     <div><strong>Mobile:</strong> ${employee.mobile}</div>
+    <div><strong>Email:</strong> ${employee.email}</div>
     <div><strong>Status:</strong> ${
       !employee.checkin && !employee.checkout
         ? "Pending"
@@ -390,10 +391,10 @@ const Allvisitorspage = ({ getload }) => {
                   </th>
                   <th className="px-4 py-2 text-left whitespace-nowrap">
                     Action
-                  </th>{" "}
-                  {/* Add action column for print button */}
+                  </th>
                 </tr>
               </thead>
+
               <tbody>
                 {latestpersons?.length > 0 ? (
                   latestpersons
