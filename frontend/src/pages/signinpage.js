@@ -5,7 +5,6 @@ import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/slice";
 import vmssign from "../../src/images/5blog-1.png";
-import SummayApi from "../helper/routes";
 
 const Signin = () => {
   const dispatch = useDispatch();
@@ -82,16 +81,10 @@ const Signin = () => {
 
     try {
       // Make a POST request to login
-      const response = await axios.post(
-        SummayApi.login.url,
-        {
-          email: email,
-          password: password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post("http://127.0.0.1:8090/api/login", {
+        email: email,
+        password: password,
+      });
 
       const responseData = response.data;
 
@@ -107,10 +100,12 @@ const Signin = () => {
         });
 
         console.log("role", responseData.user.role);
-        if (responseData.user.role === "GENERAL") {
-          navigate("/");
-        } else {
+        if (responseData.user.role === "super Admin") {
+          navigate("/superadmindashboard");
+        } else if (responseData.user.role === "Admin") {
           navigate("/admindashboard");
+        } else {
+          navigate("/");
         }
       } else {
         setGeneralError(responseData.message || "Login failed");

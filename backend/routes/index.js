@@ -73,7 +73,7 @@ router.put("/resetpassword/:id", Resetpasword);
 //Get users
 router.get("/getusers", Getusers);
 
-//serch users by name
+//search users by name
 router.post("/getuserbyname", Usersearchbyname);
 
 //Edit Employee

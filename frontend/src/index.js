@@ -12,6 +12,10 @@ import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
+import "primereact/resources/themes/saga-blue/theme.css"; // Example if using PrimeReact
+import "primereact/resources/primereact.min.css"; // PrimeReact core styles
+import "primeicons/primeicons.css";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

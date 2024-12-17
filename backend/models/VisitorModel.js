@@ -14,6 +14,7 @@ const Visitorschema = mongoose.Schema(
     checkout: Boolean,
     status: String,
     createdby: String,
+    signature: String,
   },
 
   {

@@ -15,9 +15,9 @@ import { useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
 import Addemployee from "../pages/aadEmployee";
 import { message, Skeleton } from "antd";
-import Adminheader from "./Adminheader";
+import Sheader from "./Sheader";
 
-const AdminEmployees = () => {
+const Semployees = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [cookies] = useCookies(["token"]);
@@ -54,9 +54,9 @@ const AdminEmployees = () => {
   const success = () => {
     messageApi.open({
       type: "success",
-      content: "This is a success message",
+      content: "Employee Deleted Successfully",
     });
-  };
+  };  
 
   // Fetch all employees from the backend
   const GetEmployees = async () => {
@@ -98,7 +98,7 @@ const AdminEmployees = () => {
   };
 
   function opendetails(value) {
-    navigatedetailspage(`/employeesdetails/?query=${value}`);
+    navigatedetailspage(`/semployeedetails/?query=${value}`);
   }
 
   useEffect(() => {
@@ -119,7 +119,7 @@ const AdminEmployees = () => {
   return (
     <div style={{}} className=" ">
       {contextHolder}
-      <Adminheader />
+      <Sheader />
       <div className="lg:px-24 md:px-2 sm:px-2 w-full mt-28">
         <div className="font-bold font-sans text-2xl  w-full px-2">
           Employees
@@ -305,4 +305,4 @@ const AdminEmployees = () => {
   );
 };
 
-export default AdminEmployees;
+export default Semployees;

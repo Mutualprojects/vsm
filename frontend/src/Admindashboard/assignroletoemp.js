@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import RemindOutlineIcon from "@rsuite/icons/RemindOutline";
 import { Select, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import SummayApi from "../helper/routes";
 
 const AssignRoleToEmp = ({ handleClose, GetEmployee, query, updated }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +26,7 @@ const AssignRoleToEmp = ({ handleClose, GetEmployee, query, updated }) => {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `${SummayApi.getempbyid.url}/${query}`
+          `http://127.0.0.1:8090/api/getempbyid/${query}`
         );
         const employeeData = response.data?.data?.[0];
         if (employeeData) {
@@ -120,7 +119,10 @@ const AssignRoleToEmp = ({ handleClose, GetEmployee, query, updated }) => {
     if (validateForm()) {
       setSaveloader(true);
       try {
-        const response = await axios.post(SummayApi.register.url, formData);
+        const response = await axios.post(
+          `http://127.0.0.1:8090/api/register`,
+          formData
+        );
         if (response.data?.success) {
           updated();
           GetEmployee();
@@ -135,8 +137,9 @@ const AssignRoleToEmp = ({ handleClose, GetEmployee, query, updated }) => {
   };
 
   const ROLEoptions = [
-    { value: "Admin", label: "Admin" },
     { value: "GENERAL", label: "Receptionist" },
+    { value: "Admin", label: "Admin" },
+    { value: "super Admin", label: "super Admin" },
   ];
 
   const handleSelectRole = (value) => {

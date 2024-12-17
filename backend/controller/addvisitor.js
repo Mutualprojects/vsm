@@ -14,6 +14,7 @@ async function Addvisitor(req, res) {
     checkout,
     status,
     createdby,
+    signature,
   } = req.body;
 
   // Check for missing required fields
@@ -23,7 +24,8 @@ async function Addvisitor(req, res) {
     !address ||
     !visitingperson ||
     !visitingpurpose ||
-    !photo
+    !photo ||
+    !signature
   ) {
     return res.status(204).json({
       message: "All fields are required",
@@ -47,6 +49,7 @@ async function Addvisitor(req, res) {
       checkout: false,
       status: "pending",
       createdby,
+      signature,
     };
 
     // Save the new visitor to the database

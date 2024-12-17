@@ -1,22 +1,20 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { ButtonToolbar, Input, InputGroup, Modal, Placeholder } from "rsuite";
+import { Input, InputGroup, Modal, SelectPicker } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import "rsuite/dist/rsuite.min.css";
-import Visitorprofile from "./Visitorprofile";
-import Header from "../components/Header";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/slice";
-import { Button, Dropdown, message, Select, Skeleton, Space } from "antd";
-import Allvisitorspage from "./allvisitorspage";
-import { CloseOutlined, DownOutlined } from "@ant-design/icons";
-import AddVisitorPage from "../pages/Addvisitorpage";
-import Profilepage from "../pages/Profilepage";
-import Editvisitor from "./editvisitor";
+import { Button, Dropdown, message, Select, Skeleton } from "antd";
+import Allvisitorspage from "../components/allvisitorspage";
+import { CloseOutlined } from "@ant-design/icons";
 
-const Home = () => {
+import Editvisitor from "../components/editvisitor";
+import Sheader from "./Sheader";
+
+const Shome = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -27,10 +25,11 @@ const Home = () => {
   const [visitors, setVisitors] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // Track modal state
   const [loading, setLoading] = useState(true);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const [openmodal, setOpenmodal] = useState(false);
   const [deletemodal, setDeletemodal] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
+
   const handleOpen = () => setOpenmodal(true);
   const handleClose = () => {
     setOpenmodal(false);
@@ -41,8 +40,10 @@ const Home = () => {
 
   const [reloadVisitors, setReloadVisitors] = useState(false);
 
+  console.log("user", user);
+
   const handleUserAdded = () => {
-    setReloadVisitors((prev) => !prev);
+    setReloadVisitors((prev) => !prev); // Toggle to trigger refresh
   };
 
   // Use effect to prevent body scroll when modal is open and to handle width adjustments
@@ -201,6 +202,12 @@ const Home = () => {
       key: "delete",
     },
   ];
+  const updated = () => {
+    messageApi.open({
+      type: "success",
+      content: "Visitor updated successfully",
+    });
+  };
 
   const [editid, setEditid] = useState("");
   const [clickedname, setClickedname] = useState("");
@@ -230,8 +237,9 @@ const Home = () => {
       if (responseData.success) {
         messageApi.open({
           type: "success",
-          content: "visitor" + clickedname + " deleted",
+          content: "visitor" + clickedname + "deleted",
         });
+        // alert("Visitor " + clickedname + " deleted");
         getvisitors();
         setDeletemodal(false);
         handleUserAdded();
@@ -247,18 +255,11 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const updated = () => {
-    messageApi.open({
-      type: "success",
-      content: "Visitor updated successfully",
-    });
-  };
-
   return (
     <div className=" overflow-x-hidden">
       {contextHolder}
-      <Header Getvisitors={getvisitors} getload={handleUserAdded} />
-      <div className="h-full w-full lg:px-28 md:px-2 sm:px-2 mb-16 mt-28">
+      <Sheader Getvisitors={getvisitors} getload={handleUserAdded} />
+      <div className="h-full w-full lg:px-24 md:px-2 sm:px-2 mb-16 mt-28">
         {/* Header Section */}
         <div className="px-2">
           <h1 className="font-bold text-2xl">Visitors</h1>
@@ -419,18 +420,6 @@ const Home = () => {
                         <div className="text-md text-gray-900">
                           {formatDate(employee.createdAt)}
                         </div>
-                        <div className="text-sm text-gray-600 mt-3">
-                          Signature
-                        </div>
-                        <div className="text-md text-gray-900 mt-1">
-                          <img
-                            src={employee.signature}
-                            alt="dfghj"
-                            width={100}
-                            height={100}
-                            className=" border rounded-md shadow-md"
-                          />
-                        </div>
 
                         <div className="flex flex-row gap-3">
                           {/* Check-in button */}
@@ -541,4 +530,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Shome;

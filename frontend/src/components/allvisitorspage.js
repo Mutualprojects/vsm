@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { DatePicker, Input, InputGroup, Loader, Placeholder } from "rsuite";
+import {
+  Button,
+  DatePicker,
+  Input,
+  InputGroup,
+  Loader,
+  Modal,
+  Placeholder,
+} from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
-import { Select } from "antd";
+import { Image, Select } from "antd";
 import axios from "axios";
 import Download from "../../src/images/office.png";
 
@@ -11,8 +19,9 @@ import { setUser } from "../redux/slice";
 import { useNavigate } from "react-router-dom";
 
 import * as XLSX from "xlsx"; // Import the xlsx library
-import SummayApi from "../helper/routes";
-
+import Visitormodal from "./Visitormodal";
+import { CloseOutlined } from "@ant-design/icons";
+import logo from "./../images/new logo blue.png";
 const Allvisitorspage = ({ getload }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,6 +32,13 @@ const Allvisitorspage = ({ getload }) => {
   const [searchTerm, setSearchitem] = useState("");
   const [visitors, setVisitors] = useState([]);
   const [loading, setLoading] = useState(true); // Track loading state
+  const [visitorid, setVisitorid] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (value) => {
+    setVisitorid(value);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     if (!cookies.token) {
@@ -32,7 +48,7 @@ const Allvisitorspage = ({ getload }) => {
 
     // Fetch user data
     const GetUser = async () => {
-      const response = await axios.post(SummayApi.getuser.url, {
+      const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
         token: cookies.token,
       });
       const getuserData = response.data;
@@ -47,10 +63,12 @@ const Allvisitorspage = ({ getload }) => {
 
   const getvisitors = async () => {
     setLoading(true); // Set loading state to true when starting the fetch
-    await axios.get(SummayApi.getvisitors.url).then((response) => {
-      setVisitors(response.data);
-      setLoading(false); // Set loading state to false when data is fetched
-    });
+    await axios
+      .get("http://127.0.0.1:8090/api/getvisitors")
+      .then((response) => {
+        setVisitors(response.data);
+        setLoading(false); // Set loading state to false when data is fetched
+      });
   };
 
   useEffect(() => {
@@ -200,6 +218,71 @@ const Allvisitorspage = ({ getload }) => {
     return date > today; // Disable dates greater than today
   };
 
+  const handlePrint = (employee) => {
+    // Create a temporary div for printing
+    const printContent = `
+    <fieldset>
+   <legend>
+      <img src="${logo}" width=200px; height=100px; />
+   </legend>
+   <div style="padding: 20px; font-family: Arial, sans-serif; display: flex; flex-direction: column; gap: 30px;">
+    <div>
+      <img src="${
+        employee.photo
+      }" width="180" height="200" style="border-radius: 5px; border:1px solid black" />
+    </div>
+    <div><strong>Name:</strong> ${employee.name}</div>
+    <div><strong>Mobile:</strong> ${employee.mobile}</div>
+    <div><strong>Status:</strong> ${
+      !employee.checkin && !employee.checkout
+        ? "Pending"
+        : employee.checkin && !employee.checkout
+        ? "Checked-in"
+        : "Checked-out"
+    }</div>
+    <div><strong>Visiting Purpose:</strong> ${employee.visitingpurpose}</div>
+    <div><strong>Check-in Time:</strong> ${
+      employee.checkinTime ? formatDate(employee.checkinTime) : "--"
+    }</div>
+    <div><strong>Check-out Time:</strong> ${
+      employee.checkouttime ? formatDate(employee.checkouttime) : "--"
+    }</div>
+    <div><strong>Visiting Person:</strong> ${employee.visitingperson}</div>
+    <div><strong>Created At:</strong> ${formatDate(employee.createdAt)}</div>
+    <div><strong>Created By:</strong> ${employee.createdby}</div>
+    <div style=" display: flex; justify-content: flex-end;">
+        <div>
+        <div><strong>Signature</strong></div>
+        <img src=${employee.signature} width="150"  height="70"/></div>
+    </div>
+  </div>
+</fieldset>
+
+    `;
+
+    // Create an iframe or a new window to contain the print content
+    const printWindow = document.createElement("iframe");
+    printWindow.style.position = "absolute";
+    printWindow.style.width = "0px";
+    printWindow.style.height = "0px";
+    printWindow.style.border = "none";
+    document.body.appendChild(printWindow);
+
+    const doc = printWindow.contentWindow.document;
+    doc.open();
+    doc.write(printContent);
+    doc.close();
+
+    // Trigger the print dialog
+    printWindow.contentWindow.focus();
+    printWindow.contentWindow.print();
+
+    // Optionally, remove the iframe after printing
+    setTimeout(() => {
+      document.body.removeChild(printWindow);
+    }, 1000);
+  };
+
   return (
     <div>
       <div className="h-full w-full lg:px-24 md:px-2 sm:px-2 min-h-screen ">
@@ -226,10 +309,11 @@ const Allvisitorspage = ({ getload }) => {
             <div className="w-full gap-2 flex items-center flex-row lg:w-2/6">
               <DatePicker
                 format="yyyy-MM"
-                editable={false}
+                editable={true}
                 onChange={handleCalendar}
                 className=" w-full"
-                disabledDate={disableFutureDates}
+                shouldDisableDate={disableFutureDates}
+                // disabledDate={disableFutureDates}
               />
               <Select
                 placeholder="Purpose"
@@ -237,6 +321,7 @@ const Allvisitorspage = ({ getload }) => {
                 onChange={onChangepurposeHandler}
                 options={visitingpurposeoptions}
                 className="h-10 w-full"
+                allowClear={{ clearIcon: <CloseOutlined /> }}
               />
               <div className="">
                 <img
@@ -303,6 +388,10 @@ const Allvisitorspage = ({ getload }) => {
                   <th className="px-4 py-2 text-left whitespace-nowrap">
                     Created By
                   </th>
+                  <th className="px-4 py-2 text-left whitespace-nowrap">
+                    Action
+                  </th>{" "}
+                  {/* Add action column for print button */}
                 </tr>
               </thead>
               <tbody>
@@ -314,10 +403,16 @@ const Allvisitorspage = ({ getload }) => {
                     .map((employee) => (
                       <tr key={employee._id} className="border-b">
                         <td className="px-4 py-2 whitespace-nowrap">
-                          <img
+                          {/* <img
                             alt="profile"
                             src={employee.photo}
-                            className="w-12 h-12 object-cover rounded-full"
+                            className="w-12 h-12 object-cover rounded-full hover:cursor-pointer "
+                          /> */}
+                          <Image
+                            src={employee.photo}
+                            alt="Image"
+                            width="250"
+                            preview
                           />
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap">
@@ -363,12 +458,20 @@ const Allvisitorspage = ({ getload }) => {
                         <td className="px-4 py-2 whitespace-nowrap">
                           {employee.createdby}
                         </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          <button
+                            onClick={() => handlePrint(employee)}
+                            className="text-blue-500 hover:underline"
+                          >
+                            Print
+                          </button>
+                        </td>
                       </tr>
                     ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="7"
+                      colSpan="10"
                       className="text-center px-4 py-2 text-lg text-gray-500"
                     >
                       No visitors found.
@@ -380,6 +483,23 @@ const Allvisitorspage = ({ getload }) => {
           </div>
         )}
       </div>
+
+      {/*Modal for  visitor details */}
+
+      <Modal className=" p-0" open={open} onClose={handleClose}>
+        <Visitormodal id={visitorid} />
+        {/* <Modal.Body>
+          <Visitormodal id={visitorid} />
+        </Modal.Body> */}
+        <Modal.Footer>
+          {/* <Button onClick={handleClose} appearance="primary">
+            close
+          </Button> */}
+          {/* <Button onClick={handleClose} appearance="subtle">
+            Close
+          </Button> */}
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

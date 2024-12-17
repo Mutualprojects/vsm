@@ -1,13 +1,14 @@
 import { Image } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import SummayApi from "../helper/routes";
 
 const Userdetailsmodel = ({ id }) => {
   const [user, setUser] = useState({});
 
   const getUSerbyid = async () => {
-    const response = await axios.get(`${SummayApi.getuserbyprimary.url}/${id}`);
+    const response = await axios.get(
+      `http://127.0.0.1:8090/api/getuserbyprimary/${id}`
+    );
 
     setUser(response.data.data);
   };

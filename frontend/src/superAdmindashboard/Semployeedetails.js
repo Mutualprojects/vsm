@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Image, message, Skeleton } from "antd";
-import Adminheader from "./Adminheader";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import RemindIcon from "@rsuite/icons/legacy/Remind";
@@ -14,9 +13,10 @@ import SpeedDialAction from "@mui/material/SpeedDialAction";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button, Modal } from "rsuite";
-import Editemployee from "./Editemployee";
+import Editemployee from "../Admindashboard/Editemployee";
 import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
-import Assignroletoemp from "./assignroletoemp";
+import Assignroletoemp from "../Admindashboard/assignroletoemp";
+import Sheader from "./Sheader";
 
 const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
   position: "absolute",
@@ -58,11 +58,11 @@ function Adminemployeedetails() {
 
   const actions = assign
     ? [
-        // {
-        //   icon: <AssignmentIndOutlinedIcon />,
-        //   name: "Assign Role",
-        //   onClick: handleassignmodelopen,
-        // },
+        {
+          icon: <AssignmentIndOutlinedIcon />,
+          name: "Assign Role",
+          onClick: handleassignmodelopen,
+        },
         {
           icon: <EditIcon />,
           name: "Edit",
@@ -188,8 +188,7 @@ function Adminemployeedetails() {
     );
 
     if (response.data.success) {
-      alert("employee deleted");
-      navigate("/adminemployees", { state: { refresh: true } });
+      navigate("/semployees", { state: { refresh: true } });
       handledeletemodalclose();
       await axios.get(`http://127.0.0.1:8090/api/deleteuserbyprimary/${query}`);
     }
@@ -212,11 +211,11 @@ function Adminemployeedetails() {
   return (
     <div>
       {contextHolder}
-      <Adminheader />
+      <Sheader />
       <div className="pt-28">
         <div className="lg:px-20">
           <div className="p-3 rounded-md">
-            <Link to={"/adminemployees"}>
+            <Link to={"/semployees"}>
               <button className="bg-slate-50 py-1 px-3 mb-3 rounded-md">
                 Back
               </button>

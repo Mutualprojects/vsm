@@ -47,7 +47,7 @@
 // export default Adminhome;
 
 import React, { useEffect, useState, useMemo } from "react";
-import { Input, InputGroup, Modal } from "rsuite";
+import { Input, InputGroup, Modal, SelectPicker } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import "rsuite/dist/rsuite.min.css";
 import { useCookies } from "react-cookie";
@@ -57,10 +57,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/slice";
 import { Button, Dropdown, message, Select, Skeleton } from "antd";
 import Allvisitorspage from "../components/allvisitorspage";
+import { CloseOutlined } from "@ant-design/icons";
 
 import Editvisitor from "../components/editvisitor";
 import Adminheader from "./Adminheader";
-import SummayApi from "../helper/routes";
 
 const Adminhome = () => {
   const navigate = useNavigate();
@@ -123,7 +123,7 @@ const Adminhome = () => {
 
     // Fetch user data using token
     const GetUser = async () => {
-      const response = await axios.post(SummayApi.getuser.url, {
+      const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
         token: cookies.token,
       });
 
@@ -143,10 +143,12 @@ const Adminhome = () => {
 
   const getvisitors = async () => {
     setLoading(true);
-    await axios.get(SummayApi.getvisitors.url).then((response) => {
-      setVisitors(response.data);
-      setLoading(false);
-    });
+    await axios
+      .get("http://127.0.0.1:8090/api/getvisitors")
+      .then((response) => {
+        setVisitors(response.data);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -217,7 +219,7 @@ const Adminhome = () => {
 
   // Check-in and check-out buttons
   const handleCheckin = async (value) => {
-    await axios.put(`${SummayApi.chekin.url}/${value}`);
+    await axios.put(`http://127.0.0.1:8090/api/chekin/${value}`);
     messageApi.open({
       type: "success",
       content: "visitor checked in successfully",
@@ -228,7 +230,7 @@ const Adminhome = () => {
   };
 
   const handleCheckout = async (value) => {
-    await axios.put(`${SummayApi.checkout.url}/${value}`);
+    await axios.put(`http://127.0.0.1:8090/api/checkout/${value}`);
     messageApi.open({
       type: "success",
       content: "visitor checked out successfully",
@@ -275,7 +277,7 @@ const Adminhome = () => {
   const handleOk = async () => {
     try {
       const response = await axios.delete(
-        `${SummayApi.deletevisitor.url}/${editid}`
+        `http://127.0.0.1:8090/api/deletevisitor/${editid}`
       );
 
       const responseData = response.data;
@@ -283,8 +285,16 @@ const Adminhome = () => {
       if (responseData.success) {
         messageApi.open({
           type: "success",
-          content: "visitor" + clickedname + "deleted",
+          content: (
+            <span>
+              {`Visitor\u00A0`}
+              <strong style={{ fontWeight: "bold" }}>{clickedname}</strong>{" "}
+              {/* Highlight clickedname in red */}
+              {`deleted`}
+            </span>
+          ),
         });
+
         // alert("Visitor " + clickedname + " deleted");
         getvisitors();
         setDeletemodal(false);
@@ -339,6 +349,7 @@ const Adminhome = () => {
                   onChange={onChangepurposeHandler}
                   options={visitingpurposeoptions}
                   className="h-10 w-full"
+                  allowClear={{ clearIcon: <CloseOutlined /> }}
                 />
               </div>
             </div>

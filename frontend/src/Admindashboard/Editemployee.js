@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Alert, message, Spin } from "antd";
 import RemindOutlineIcon from "@rsuite/icons/RemindOutline";
 import { LoadingOutlined } from "@ant-design/icons";
-import SummayApi from "../helper/routes";
 
 const Editemployee = ({ handleClose, Getemployee, query, updated }) => {
   const [filename, setFilename] = useState(null);
@@ -26,7 +25,7 @@ const Editemployee = ({ handleClose, Getemployee, query, updated }) => {
     const fetchEmployee = async () => {
       try {
         const response = await axios.get(
-          `${SummayApi.getempbyid.url}/${query}`
+          `http://127.0.0.1:8090/api/getempbyid/${query}`
         );
         // Extracting employee data from the response
         const employeeData = response.data?.data?.[0];
@@ -163,7 +162,7 @@ const Editemployee = ({ handleClose, Getemployee, query, updated }) => {
       setSaveloader(true);
       try {
         const response = await axios.put(
-          `${SummayApi.editemployee.url}/${query}`,
+          `http://127.0.0.1:8090/api/editemployee/${query}`,
           formData
         );
 
@@ -187,7 +186,10 @@ const Editemployee = ({ handleClose, Getemployee, query, updated }) => {
             // alert("employee updated successfully");
             Getemployee();
             handleClose();
-            await axios.put(`${SummayApi.edituser.url}/${query}`, formData);
+            await axios.put(
+              `http://127.0.0.1:8090/api/edituser/${query}`,
+              formData
+            );
 
             // if (userresponse.data.success) {
             //   // alert("user also updated");

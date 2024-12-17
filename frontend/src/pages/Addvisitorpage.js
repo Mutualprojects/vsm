@@ -6,7 +6,7 @@ import Webcam from "react-webcam"; // Import react-webcam
 import { MdOutlineFlipCameraIos } from "react-icons/md";
 import { Loader } from "rsuite";
 import { LoadingOutlined } from "@ant-design/icons";
-import SummayApi from "../helper/routes";
+import SignatureCanvas from "react-signature-canvas";
 
 const AddVisitorPage = ({
   handleClose,
@@ -25,7 +25,10 @@ const AddVisitorPage = ({
   const [swapcamera, setSwapcamera] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
   const [saveloader, setSaveloader] = useState();
-
+  const [isSignaturePadVisible, setIsSignaturePadVisible] = useState(false); // State to toggle visibility of SignaturePad
+  const [signatureData, setSignatureData] = useState(""); // To store the base64 image of the signature
+  const sigCanvas = useRef(null);
+  const [errorMessage, setErrorMessage] = useState("");
   useEffect(() => {
     if (location.pathname === "/employees") {
       setError(true);
@@ -45,6 +48,7 @@ const AddVisitorPage = ({
     visitingpurpose: "",
     visitingperson: "",
     photo: "",
+    signature: "",
     createdby: username,
   });
 
@@ -52,6 +56,7 @@ const AddVisitorPage = ({
     name: "",
     mobile: "",
     address: "",
+    signature: "",
     visitingpurpose: "",
     visitingperson: "",
     photo: "",
@@ -89,6 +94,10 @@ const AddVisitorPage = ({
       error = "Photo is required !";
     }
 
+    if (field === "signature" && !value) {
+      error = "Signature is required !";
+    }
+
     setErrors((prevErrors) => ({
       ...prevErrors,
       [field]: error,
@@ -102,7 +111,7 @@ const AddVisitorPage = ({
     // Name validation
     if (!formData.name) {
       newErrors.name = "Name is required";
-      valid = false;
+      valid = false;  
     }
 
     // Email validation
@@ -143,6 +152,11 @@ const AddVisitorPage = ({
 
     if (!formData.visitingperson) {
       newErrors.visitingperson = "visiting person is required";
+      valid = false;
+    }
+
+    if (!formData.signature) {
+      newErrors.signature = "Ssignature is required";
       valid = false;
     }
 
@@ -193,7 +207,7 @@ const AddVisitorPage = ({
   // Fetch employees from API
   const GetEmployees = async () => {
     try {
-      const response = await axios.get(SummayApi.employees.url);
+      const response = await axios.get("http://127.0.0.1:8090/api/employees");
       setEmployees(response.data); // Assuming response.data is an array of employees
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -248,7 +262,10 @@ const AddVisitorPage = ({
 
     if (valid) {
       setSaveloader(true);
-      const response = await axios.post(SummayApi.addvisitor.url, formData);
+      const response = await axios.post(
+        "http://127.0.0.1:8090/api/addvisitor",
+        formData
+      );
 
       const responseData = response.data;
 
@@ -261,6 +278,7 @@ const AddVisitorPage = ({
           name: "",
           mobile: "",
           address: "",
+          signature: "",
           visitingpurpose: "",
           visitingperson: "",
           photo: "",
@@ -283,6 +301,38 @@ const AddVisitorPage = ({
 
   const handlecameraswap = () => {
     setSwapcamera(!swapcamera);
+  };
+
+  const handleOpenSignaturePad = () => {
+    setIsSignaturePadVisible(true); // Show the SignaturePad
+  };
+
+  const handleSaveSignature = () => {
+    if (sigCanvas.current.isEmpty()) {
+      setErrorMessage("Please provide a signature before saving.");
+      return;
+    }
+
+    const dataUrl = sigCanvas.current.toDataURL(); // Get the base64 image
+    setSignatureData(dataUrl); // Update state with signature image
+    setErrorMessage(""); // Clear error message
+    setIsSignaturePadVisible(false); // Close the SignaturePad after saving
+    setFormdata((preve) => {
+      return {
+        ...preve,
+        signature: dataUrl,
+      };
+    });
+  };
+
+  const handleCloseSignaturePad = () => {
+    setIsSignaturePadVisible(false); // Close the SignaturePad without saving
+  };
+
+  const clearSignature = () => {
+    sigCanvas.current.clear();
+    setSignatureData("");
+    setErrorMessage(""); // Reset error message on clear
   };
 
   return (
@@ -437,14 +487,105 @@ const AddVisitorPage = ({
             </div>
           )}
         </div>
-
-        {/* Display Captured Photo */}
         {photo && (
           <div className="mt-4">
             <h3>Captured Photo:</h3>
             <img src={photo} alt="Captured" className="w-full" />
           </div>
         )}
+
+        <div className="mt-3">
+          <h3>Visitor Signature:</h3>
+          {/* Button to open the SignaturePad */}
+          <button
+            type="button"
+            onClick={handleOpenSignaturePad}
+            className="btn btn-secondary w-1/3 "
+          >
+            Add Signature
+          </button>
+
+          {/* Conditional rendering of SignaturePad */}
+          {isSignaturePadVisible && (
+            <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center p-3">
+              <div
+                className="card shadow-lg p-4 w-100"
+                style={{ maxWidth: "600px" }}
+              >
+                <h2 className="text-center text-primary mb-4">Sign Here</h2>
+
+                <div className="d-flex justify-content-center mb-4">
+                  <SignatureCanvas
+                    ref={sigCanvas}
+                    penColor="black"
+                    canvasProps={{
+                      width: 500,
+                      height: 300,
+                      className: "border border-secondary rounded",
+                    }}
+                  />
+                </div>
+
+                {/* Error message when signature is empty */}
+                {errorMessage && (
+                  <div className="alert alert-danger text-center">
+                    {errorMessage}
+                  </div>
+                )}
+
+                <div className="d-flex justify-content-between">
+                  <button
+                    onClick={clearSignature}
+                    type="button"
+                    className="btn btn-danger w-100 w-sm-auto mb-2 mb-sm-0"
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveSignature}
+                    className="btn btn-success w-100 w-sm-auto"
+                  >
+                    Save
+                  </button>
+                </div>
+
+                {/* Close button */}
+                <div className="mt-3">
+                  <button
+                    onClick={handleCloseSignaturePad}
+                    className="btn btn-secondary w-100"
+                  >
+                    Close
+                  </button>
+                </div>
+
+                {/* Display the saved signature as an image if available */}
+                {signatureData && (
+                  <div className="mt-4 text-center">
+                    <h4 className="text-success">Signature Saved!</h4>
+                    <img
+                      src={signatureData}
+                      alt="Saved Signature"
+                      className="border rounded"
+                      style={{ maxWidth: "100%", height: "auto" }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Display the saved signature if available */}
+          {signatureData && !isSignaturePadVisible && (
+            <div>
+              <h3>Signature:</h3>
+              <img src={signatureData} alt="Saved Signature" />
+            </div>
+          )}
+        </div>
+
+        {/* Display Captured Photo */}
 
         <div className=" w-full flex flex-row gap-4">
           <div className=" btn btn-light w-full" onClick={handleClose}>
