@@ -4,6 +4,7 @@ async function Addvisitor(req, res) {
   const {
     name,
     mobile,
+    email,
     address,
     visitingpurpose,
     visitingperson,
@@ -25,7 +26,8 @@ async function Addvisitor(req, res) {
     !visitingperson ||
     !visitingpurpose ||
     !photo ||
-    !signature
+    !signature ||
+    !email
   ) {
     return res.status(204).json({
       message: "All fields are required",
@@ -43,6 +45,7 @@ async function Addvisitor(req, res) {
       visitingpurpose,
       visitingperson,
       photo,
+      email,
       checkinTime,
       checkin: false,
       checkouttime,
