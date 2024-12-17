@@ -31,7 +31,7 @@ async function UserSignup(req, res) {
     const newUser = {
       name,
       email,
-      password,
+      password: hashedPassword,
       profile,
       role,
       mobile,
