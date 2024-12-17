@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx"; // Import the xlsx library
 import Visitormodal from "./Visitormodal";
 import { CloseOutlined } from "@ant-design/icons";
-
+import logo from "./../images/new logo blue.png";
 const Allvisitorspage = ({ getload }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -218,6 +218,71 @@ const Allvisitorspage = ({ getload }) => {
     return date > today; // Disable dates greater than today
   };
 
+  const handlePrint = (employee) => {
+    // Create a temporary div for printing
+    const printContent = `
+    <fieldset>
+   <legend>
+      <img src="${logo}" width=200px; height=100px; />
+   </legend>
+   <div style="padding: 20px; font-family: Arial, sans-serif; display: flex; flex-direction: column; gap: 30px;">
+    <div>
+      <img src="${
+        employee.photo
+      }" width="180" height="200" style="border-radius: 5px; border:1px solid black" />
+    </div>
+    <div><strong>Name:</strong> ${employee.name}</div>
+    <div><strong>Mobile:</strong> ${employee.mobile}</div>
+    <div><strong>Status:</strong> ${
+      !employee.checkin && !employee.checkout
+        ? "Pending"
+        : employee.checkin && !employee.checkout
+        ? "Checked-in"
+        : "Checked-out"
+    }</div>
+    <div><strong>Visiting Purpose:</strong> ${employee.visitingpurpose}</div>
+    <div><strong>Check-in Time:</strong> ${
+      employee.checkinTime ? formatDate(employee.checkinTime) : "--"
+    }</div>
+    <div><strong>Check-out Time:</strong> ${
+      employee.checkouttime ? formatDate(employee.checkouttime) : "--"
+    }</div>
+    <div><strong>Visiting Person:</strong> ${employee.visitingperson}</div>
+    <div><strong>Created At:</strong> ${formatDate(employee.createdAt)}</div>
+    <div><strong>Created By:</strong> ${employee.createdby}</div>
+    <div style=" display: flex; justify-content: flex-end;">
+        <div>
+        <div><strong>Signature</strong></div>
+        <img src=${employee.signature} width="150"  height="70"/></div>
+    </div>
+  </div>
+</fieldset>
+
+    `;
+
+    // Create an iframe or a new window to contain the print content
+    const printWindow = document.createElement("iframe");
+    printWindow.style.position = "absolute";
+    printWindow.style.width = "0px";
+    printWindow.style.height = "0px";
+    printWindow.style.border = "none";
+    document.body.appendChild(printWindow);
+
+    const doc = printWindow.contentWindow.document;
+    doc.open();
+    doc.write(printContent);
+    doc.close();
+
+    // Trigger the print dialog
+    printWindow.contentWindow.focus();
+    printWindow.contentWindow.print();
+
+    // Optionally, remove the iframe after printing
+    setTimeout(() => {
+      document.body.removeChild(printWindow);
+    }, 1000);
+  };
+
   return (
     <div>
       <div className="h-full w-full lg:px-24 md:px-2 sm:px-2 min-h-screen ">
@@ -323,6 +388,10 @@ const Allvisitorspage = ({ getload }) => {
                   <th className="px-4 py-2 text-left whitespace-nowrap">
                     Created By
                   </th>
+                  <th className="px-4 py-2 text-left whitespace-nowrap">
+                    Action
+                  </th>{" "}
+                  {/* Add action column for print button */}
                 </tr>
               </thead>
               <tbody>
@@ -338,36 +407,15 @@ const Allvisitorspage = ({ getload }) => {
                             alt="profile"
                             src={employee.photo}
                             className="w-12 h-12 object-cover rounded-full hover:cursor-pointer "
-                            onClick={() => {
-                              handleOpen(employee._id);
-                            }}
                           /> */}
-
                           <Image
                             src={employee.photo}
-                            width={60}
-                            className=" object-cover"
-                            style={{
-                              objectFit: "fill",
-                            }}
-
-                            // style={{ borderRadius: "50%", objectFit: "cover" }}
-                            // preview={false}
+                            alt="Image"
+                            width="250"
+                            preview
                           />
-                          {/* <Image
-                            src={employee.photo}
-                            alt="Employee Photo"
-                            width={80}
-                            height={60}
-                            preview={{ src: employee.photo }} // Enabling zoom preview
-                          /> */}
                         </td>
-                        <td
-                          className="px-4 py-2 whitespace-nowrap hover:cursor-pointer"
-                          // onClick={() => {
-                          //   handleOpen(employee._id);
-                          // }}
-                        >
+                        <td className="px-4 py-2 whitespace-nowrap">
                           {employee.name}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap">
@@ -410,12 +458,20 @@ const Allvisitorspage = ({ getload }) => {
                         <td className="px-4 py-2 whitespace-nowrap">
                           {employee.createdby}
                         </td>
+                        <td className="px-4 py-2 whitespace-nowrap">
+                          <button
+                            onClick={() => handlePrint(employee)}
+                            className="text-blue-500 hover:underline"
+                          >
+                            Print
+                          </button>
+                        </td>
                       </tr>
                     ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="7"
+                      colSpan="10"
                       className="text-center px-4 py-2 text-lg text-gray-500"
                     >
                       No visitors found.
