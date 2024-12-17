@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Image, Skeleton } from "antd";
+import SummayApi from "../helper/routes";
 
 function Employeedetails() {
   const [searchParams] = useSearchParams();
@@ -18,9 +19,7 @@ function Employeedetails() {
   // Fetch employee details by ID
   const GEtemployee = async () => {
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8090/api/getempbyid/${query}`
-      );
+      const response = await axios.get(`${SummayApi.getempbyid.url}/${query}`);
       const employeeData = response.data.data;
       setEmployee(employeeData);
       if (employeeData?.length > 0) {
@@ -40,7 +39,7 @@ function Employeedetails() {
     try {
       if (empname) {
         const response = await axios.get(
-          `http://127.0.0.1:8090/api/getvisitorbyname/${empname}`
+          `${SummayApi.getvisitorbyname.url}/${empname}`
         );
         setVisitors(response.data.data); // Set visitors data
       }

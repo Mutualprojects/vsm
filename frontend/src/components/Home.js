@@ -247,6 +247,13 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const updated = () => {
+    messageApi.open({
+      type: "success",
+      content: "Visitor updated successfully",
+    });
+  };
+
   return (
     <div className=" overflow-x-hidden">
       {contextHolder}
@@ -514,6 +521,7 @@ const Home = () => {
               handleClose={handleClose}
               getvisitors={getvisitors}
               getload={handleUserAdded}
+              updated={updated}
             />
           </Modal.Body>
           <Modal.Footer></Modal.Footer>

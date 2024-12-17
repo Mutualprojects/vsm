@@ -111,7 +111,7 @@ const AddVisitorPage = ({
     // Name validation
     if (!formData.name) {
       newErrors.name = "Name is required";
-      valid = false;
+      valid = false;  
     }
 
     // Email validation
