@@ -4,93 +4,76 @@ import {
   InputGroup,
   Input,
   Modal,
+  Button,
   ButtonToolbar,
   toaster,
   Placeholder,
-  Button,
 } from "rsuite";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
 import Addemployee from "../pages/aadEmployee";
-import { Dropdown, message, Skeleton } from "antd";
-import Adminheader from "./Adminheader";
-import Adduser from "./Adduser";
-import Userdetailsmodel from "./Userdetailsmodel";
-import { setUser } from "../redux/slice";
+import { message, Skeleton } from "antd";
+import Sheader from "./Sheader";
 
-const Adminusers = () => {
+const Semployees = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
-  const [cookies, setCookies] = useCookies(["token"]);
+  const [cookies] = useCookies(["token"]);
+  const navigatedetailspage = useNavigate();
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
 
   // Redirect to signin if token is missing or user is not logged in
   useEffect(() => {
-    // If no token, redirect to signin
     if (!cookies.token) {
       navigate("/signin");
       return; // Early return if token doesn't exist
     }
-
-    // Fetch user data using token
-    const GetUser = async () => {
-      const response = await axios.post("http://127.0.0.1:8090/api/getuser", {
-        token: cookies.token,
-      });
-
-      const getuserData = response.data;
-
-      if (getuserData.data.message === "Invalid token") {
-        alert("Invalid token");
-        navigate("/signin");
-      }
-
-      dispatch(setUser(getuserData.data));
-    };
-
-    GetUser();
-  }, [cookies.token, navigate, dispatch]);
-  console.log("userfdghj", user);
+  }, []);
+  // If no token, redirect to signin
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [messageApi, contextHolder] = message.useMessage();
 
   const [employees, setEmployees] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [userid, setUserid] = useState("");
 
-  const [viewmodel, setViewmodel] = useState(false);
-  const handleviewopen = (value) => {
-    setViewmodel(true);
-    setUserid(value);
-  };
-  const handleviewclose = () => setViewmodel(false);
+  const location = useLocation();
+  const [hasRefreshed, setHasRefreshed] = useState(false);
 
-  const [deletemodal, setDeletemodal] = useState(false);
-  const handledeleteopen = (value) => setDeletemodal(true);
+  useEffect(() => {
+    if (location.state?.refresh && !hasRefreshed) {
+      success();
+      setHasRefreshed(true);
+    }
+  }, [location.state, hasRefreshed]);
 
-  const handledeleteclose = () => setDeletemodal(false);
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Employee Deleted Successfully",
+    });
+  };  
 
   // Fetch all employees from the backend
   const GetEmployees = async () => {
     setLoading(true);
     try {
-      await axios.get("http://127.0.0.1:8090/api/getusers").then((response) => {
-        setEmployees(response.data.data);
-        setLoading(false);
-      });
+      await axios
+        .get("http://127.0.0.1:8090/api/employees")
+        .then((response) => {
+          setEmployees(response.data);
+          setLoading(false);
+        });
     } catch (error) {
       console.error("Error fetching employees:", error);
     }
   };
 
-  console.log("employees", user);
+  console.log("employees", employees);
 
   // Handle search query change
   const handleQuerychange = async (value) => {
@@ -102,15 +85,21 @@ const Adminusers = () => {
     } else {
       // If there is a search query, fetch filtered employees based on query
       const response = await axios.post(
-        "http://127.0.0.1:8090/api/getuserbyname",
+        "http://127.0.0.1:8090/api/searchemployee",
         {
           query: value,
         }
       );
 
+      console.log("employee", response.data);
+
       setEmployees(response.data); // Update employees with search results
     }
   };
+
+  function opendetails(value) {
+    navigatedetailspage(`/semployeedetails/?query=${value}`);
+  }
 
   useEffect(() => {
     GetEmployees(); // Fetch all employees when component mounts
@@ -119,77 +108,28 @@ const Adminusers = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const items = [
-    {
-      label: "View",
-      key: "view",
-    },
-    // {
-    //   label: "Delete",
-    //   key: "delete",
-    // },
-  ];
-
-  const [username, setUsername] = useState("");
-
-  const handleMenuClick = (value, id, name) => {
-    // alert(id.key);
-    // alert(value);
-    // setClickedname(name);
-
-    if (id.key === "view") {
-      setViewmodel(true);
-      setUserid(value);
-      // setOpenmodal(true);
-      // setEditid(value);
-    } else {
-      setDeletemodal(true);
-      setUserid(value);
-      setUsername(name);
-    }
+  const updated = () => {
+    messageApi.open({
+      type: "success",
+      content: "employee updated successfully",
+    });
   };
-
-  const handleUSerdelete = async () => {
-    const response = await axios.delete(
-      `http://127.0.0.1:8090/api/deleteuserbyid/${userid}`
-    );
-    if (response.data.success) {
-      messageApi.open({
-        type: "success",
-        content: (
-          <span>
-            {`Visitor\u00A0`}
-            <strong style={{ fontWeight: "bold" }}>{username}</strong>{" "}
-            {/* Highlight clickedname in red */}
-            {`deleted`}
-          </span>
-        ),
-        //  "User" + username + " deleted",
-      });
-      // alert("User deleted");
-      GetEmployees();
-      handledeleteclose();
-      if (user._id === userid) {
-        navigate("/signin");
-      }
-    }
-  };
-
   return (
-    <div style={{}} className="">
+    <div style={{}} className=" ">
       {contextHolder}
-      <Adminheader />
+      <Sheader />
       <div className="lg:px-24 md:px-2 sm:px-2 w-full mt-28">
-        <div className="font-bold font-sans text-2xl mt-3 w-full px-2">
-          Users
+        <div className="font-bold font-sans text-2xl  w-full px-2">
+          Employees
         </div>
 
-        <div className="lg:flex lg:flex-row lg:items-center lg:justify-between w-full mt-5 px-2">
+        <div className="lg:flex lg:flex-row lg:items-center lg:justify-between w-full mt-2">
           {/* Search Input and Add Employee Button */}
-          <div className="flex flex-col md:flex-row lg:flex-row w-full mt-16 lg:mt-10">
+          <div className="flex flex-col md:flex-row lg:flex-row w-full mt-16 lg:mt-1 sm:mt-2 px-2">
             {/* Search Input */}
-            <div className="lg:w-5/6 md:w-4/5 sm:w-full">
+            <div className="lg:w-5/6 md:w-4/5 sm:w-full lg:pr-2  md:pr-3">
               <InputGroup style={{ width: "100%", height: 40 }}>
                 <InputGroup.Addon className="bg-slate-100">
                   <SearchIcon />
@@ -204,7 +144,7 @@ const Adminusers = () => {
             </div>
 
             {/* Add Employee Button (unchanged code) */}
-            {/* <div className="  lg:w-1/6 md:w-1/5 sm:w-full flex justify-end lg:mt-0 lg:block sm:hidden md:block hidden ">
+            <div className="  lg:w-1/6 md:w-1/5 sm:w-full flex justify-end lg:mt-0 lg:block sm:hidden md:block hidden ">
               <button
                 onClick={handleOpen}
                 className="bg-blue-500 text-white py-2 px-4 w-full rounded-md hover:bg-blue-600"
@@ -221,7 +161,7 @@ const Adminusers = () => {
               >
                 Add Employee
               </ButtonToolbar>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -233,7 +173,11 @@ const Adminusers = () => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Adduser handleClose={handleClose} Getemployees={GetEmployees} />
+            <Addemployee
+              handleClose={handleClose}
+              Getemployees={GetEmployees}
+              updated={updated}
+            />
           </Modal.Body>
           <Modal.Footer></Modal.Footer>
         </Modal>
@@ -311,20 +255,20 @@ const Adminusers = () => {
                 .map((employee) => (
                   <div
                     key={employee._id}
-                    className="bg-slate-100  rounded-lg overflow-hidden transform transition-transform duration-300  min-h-80"
+                    onClick={() => opendetails(employee._id)}
+                    className="bg-white cursor-pointer rounded-lg shadow-lg overflow-hidden transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
                   >
                     {/* Profile Image Section */}
-                    <div className="relative h-48  p-7">
+                    <div className="relative h-48 border-b-4 border-gray-100 p-2">
                       <img
                         alt="profile"
                         src={employee.profile}
-                        className="w-full h-full object-cover rounded-lg shadow-md cursor-pointer"
-                        onClick={() => handleviewopen(employee._id)}
+                        className="w-full h-full object-cover rounded-lg shadow-md"
                       />
                     </div>
 
                     {/* Employee Info Section */}
-                    <div className="px-4 pt-3 text-start space-y-2">
+                    <div className="px-4 py-3 text-start space-y-2">
                       <h3 className="text-2xl font-semibold text-gray-800 truncate">
                         {employee.name}
                       </h3>
@@ -334,19 +278,12 @@ const Adminusers = () => {
                         {employee.empid}
                       </p>
                     </div>
-                    <div className=" px-4 py-3 ">
-                      <Dropdown
-                        menu={{
-                          items,
-                          onClick: (e) =>
-                            handleMenuClick(employee._id, e, employee.name),
-                        }}
-                        trigger={["click"]}
-                      >
-                        <button className="mt-3 py-1 px-2 border bg-slate-300 text-black rounded-md">
-                          More..
-                        </button>
-                      </Dropdown>
+
+                    {/* Hovered Border */}
+                    <div className="p-3 absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-100 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                      <button className="text-white bg-indigo-600 py-1 px-3 rounded-md text-sm font-semibold transform hover:scale-105 transition duration-200">
+                        View Profile
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -363,48 +300,9 @@ const Adminusers = () => {
             </p>
           </div>
         )}
-
-        <Modal open={viewmodel} onClose={handleviewclose}>
-          <Modal.Header>
-            <Modal.Title className=" text-center"></Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Userdetailsmodel id={userid} />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={handleviewclose} appearance="subtle">
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {/*Delete modal */}
-        <Modal open={deletemodal} onClose={handledeleteclose}>
-          <Modal.Header>
-            <Modal.Title>Delete User</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            You are about to delete the User{" "}
-            <div className=" inline-block font-bold">{username}</div> , are you
-            sure?
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={handledeleteclose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              onClick={handleUSerdelete}
-              color="red"
-              appearance="primary"
-            >
-              Delete
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     </div>
   );
 };
 
-export default Adminusers;
+export default Semployees;

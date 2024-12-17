@@ -15,12 +15,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
 import Addemployee from "../pages/aadEmployee";
 import { Dropdown, message, Skeleton } from "antd";
-import Adminheader from "./Adminheader";
-import Adduser from "./Adduser";
-import Userdetailsmodel from "./Userdetailsmodel";
+import Adduser from "../Admindashboard/Adduser";
+import Userdetailsmodel from "../Admindashboard/Userdetailsmodel";
 import { setUser } from "../redux/slice";
+import Sheader from "./Sheader";
 
-const Adminusers = () => {
+const Susers = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const [cookies, setCookies] = useCookies(["token"]);
@@ -125,10 +125,10 @@ const Adminusers = () => {
       label: "View",
       key: "view",
     },
-    // {
-    //   label: "Delete",
-    //   key: "delete",
-    // },
+    {
+      label: "Delete",
+      key: "delete",
+    },
   ];
 
   const [username, setUsername] = useState("");
@@ -159,13 +159,12 @@ const Adminusers = () => {
         type: "success",
         content: (
           <span>
-            {`Visitor\u00A0`}
+            {`User\u00A0`}
             <strong style={{ fontWeight: "bold" }}>{username}</strong>{" "}
             {/* Highlight clickedname in red */}
             {`deleted`}
           </span>
         ),
-        //  "User" + username + " deleted",
       });
       // alert("User deleted");
       GetEmployees();
@@ -179,7 +178,7 @@ const Adminusers = () => {
   return (
     <div style={{}} className="">
       {contextHolder}
-      <Adminheader />
+      <Sheader />
       <div className="lg:px-24 md:px-2 sm:px-2 w-full mt-28">
         <div className="font-bold font-sans text-2xl mt-3 w-full px-2">
           Users
@@ -407,4 +406,4 @@ const Adminusers = () => {
   );
 };
 
-export default Adminusers;
+export default Susers;

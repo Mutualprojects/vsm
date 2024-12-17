@@ -10,6 +10,12 @@ import Adminhome from "../Admindashboard/Adminhome";
 import AdminEmployees from "../Admindashboard/Adminemployees";
 import Adminemployeedetails from "../Admindashboard/Employeedetails";
 import Users from "../Admindashboard/Users";
+import Shome from "../superAdmindashboard/Shome";
+import Semployees from "../superAdmindashboard/Semployees";
+import Susers from "../superAdmindashboard/Susers";
+import Sprofile from "../superAdmindashboard/saprofilepage";
+import Adminprofile from "../Admindashboard/Profilepage";
+import Semployeedetails from "../superAdmindashboard/Semployeedetails";
 
 const router = createBrowserRouter([
   {
@@ -28,10 +34,7 @@ const router = createBrowserRouter([
         path: "addvisitor",
         element: <Addvisitorpage />,
       },
-      {
-        path: "signin",
-        element: <Signin />,
-      },
+
       {
         path: "profile",
         element: <Profilepage />,
@@ -47,7 +50,32 @@ const router = createBrowserRouter([
       { path: "adminemployees", element: <AdminEmployees /> },
       { path: "employeesdetails", element: <Adminemployeedetails /> },
       { path: "users", element: <Users /> },
+      { path: "aprofile", element: <Adminprofile /> },
+      {
+        path: "superadmindashboard",
+        element: <Shome />,
+      },
+      {
+        path: "semployees",
+        element: <Semployees />,
+      },
+      {
+        path: "susers",
+        element: <Susers />,
+      },
+      {
+        path: "sprofile",
+        element: <Sprofile />,
+      },
+      {
+        path: "semployeedetails",
+        element: <Semployeedetails />,
+      },
     ],
+  },
+  {
+    path: "signin",
+    element: <Signin />,
   },
 ]);
 

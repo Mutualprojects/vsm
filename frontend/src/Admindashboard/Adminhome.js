@@ -47,7 +47,7 @@
 // export default Adminhome;
 
 import React, { useEffect, useState, useMemo } from "react";
-import { Input, InputGroup, Modal } from "rsuite";
+import { Input, InputGroup, Modal, SelectPicker } from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
 import "rsuite/dist/rsuite.min.css";
 import { useCookies } from "react-cookie";
@@ -57,6 +57,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../redux/slice";
 import { Button, Dropdown, message, Select, Skeleton } from "antd";
 import Allvisitorspage from "../components/allvisitorspage";
+import { CloseOutlined } from "@ant-design/icons";
 
 import Editvisitor from "../components/editvisitor";
 import Adminheader from "./Adminheader";
@@ -284,8 +285,16 @@ const Adminhome = () => {
       if (responseData.success) {
         messageApi.open({
           type: "success",
-          content: "visitor" + clickedname + "deleted",
+          content: (
+            <span>
+              {`Visitor\u00A0`}
+              <strong style={{ fontWeight: "bold" }}>{clickedname}</strong>{" "}
+              {/* Highlight clickedname in red */}
+              {`deleted`}
+            </span>
+          ),
         });
+
         // alert("Visitor " + clickedname + " deleted");
         getvisitors();
         setDeletemodal(false);
@@ -340,6 +349,7 @@ const Adminhome = () => {
                   onChange={onChangepurposeHandler}
                   options={visitingpurposeoptions}
                   className="h-10 w-full"
+                  allowClear={{ clearIcon: <CloseOutlined /> }}
                 />
               </div>
             </div>

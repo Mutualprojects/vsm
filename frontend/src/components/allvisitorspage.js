@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { DatePicker, Input, InputGroup, Loader, Placeholder } from "rsuite";
+import {
+  Button,
+  DatePicker,
+  Input,
+  InputGroup,
+  Loader,
+  Modal,
+  Placeholder,
+} from "rsuite";
 import SearchIcon from "@rsuite/icons/Search";
-import { Select } from "antd";
+import { Image, Select } from "antd";
 import axios from "axios";
 import Download from "../../src/images/office.png";
 
@@ -11,6 +19,8 @@ import { setUser } from "../redux/slice";
 import { useNavigate } from "react-router-dom";
 
 import * as XLSX from "xlsx"; // Import the xlsx library
+import Visitormodal from "./Visitormodal";
+import { CloseOutlined } from "@ant-design/icons";
 
 const Allvisitorspage = ({ getload }) => {
   const navigate = useNavigate();
@@ -22,6 +32,13 @@ const Allvisitorspage = ({ getload }) => {
   const [searchTerm, setSearchitem] = useState("");
   const [visitors, setVisitors] = useState([]);
   const [loading, setLoading] = useState(true); // Track loading state
+  const [visitorid, setVisitorid] = useState("");
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (value) => {
+    setVisitorid(value);
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     if (!cookies.token) {
@@ -227,10 +244,11 @@ const Allvisitorspage = ({ getload }) => {
             <div className="w-full gap-2 flex items-center flex-row lg:w-2/6">
               <DatePicker
                 format="yyyy-MM"
-                editable={false}
+                editable={true}
                 onChange={handleCalendar}
                 className=" w-full"
-                disabledDate={disableFutureDates}
+                shouldDisableDate={disableFutureDates}
+                // disabledDate={disableFutureDates}
               />
               <Select
                 placeholder="Purpose"
@@ -238,6 +256,7 @@ const Allvisitorspage = ({ getload }) => {
                 onChange={onChangepurposeHandler}
                 options={visitingpurposeoptions}
                 className="h-10 w-full"
+                allowClear={{ clearIcon: <CloseOutlined /> }}
               />
               <div className="">
                 <img
@@ -315,13 +334,40 @@ const Allvisitorspage = ({ getload }) => {
                     .map((employee) => (
                       <tr key={employee._id} className="border-b">
                         <td className="px-4 py-2 whitespace-nowrap">
-                          <img
+                          {/* <img
                             alt="profile"
                             src={employee.photo}
-                            className="w-12 h-12 object-cover rounded-full"
+                            className="w-12 h-12 object-cover rounded-full hover:cursor-pointer "
+                            onClick={() => {
+                              handleOpen(employee._id);
+                            }}
+                          /> */}
+
+                          <Image
+                            src={employee.photo}
+                            width={60}
+                            className=" object-cover"
+                            style={{
+                              objectFit: "fill",
+                            }}
+
+                            // style={{ borderRadius: "50%", objectFit: "cover" }}
+                            // preview={false}
                           />
+                          {/* <Image
+                            src={employee.photo}
+                            alt="Employee Photo"
+                            width={80}
+                            height={60}
+                            preview={{ src: employee.photo }} // Enabling zoom preview
+                          /> */}
                         </td>
-                        <td className="px-4 py-2 whitespace-nowrap">
+                        <td
+                          className="px-4 py-2 whitespace-nowrap hover:cursor-pointer"
+                          // onClick={() => {
+                          //   handleOpen(employee._id);
+                          // }}
+                        >
                           {employee.name}
                         </td>
                         <td className="px-4 py-2 whitespace-nowrap">
@@ -381,6 +427,23 @@ const Allvisitorspage = ({ getload }) => {
           </div>
         )}
       </div>
+
+      {/*Modal for  visitor details */}
+
+      <Modal className=" p-0" open={open} onClose={handleClose}>
+        <Visitormodal id={visitorid} />
+        {/* <Modal.Body>
+          <Visitormodal id={visitorid} />
+        </Modal.Body> */}
+        <Modal.Footer>
+          {/* <Button onClick={handleClose} appearance="primary">
+            close
+          </Button> */}
+          {/* <Button onClick={handleClose} appearance="subtle">
+            Close
+          </Button> */}
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -137,8 +137,9 @@ const AssignRoleToEmp = ({ handleClose, GetEmployee, query, updated }) => {
   };
 
   const ROLEoptions = [
-    { value: "Admin", label: "Admin" },
     { value: "GENERAL", label: "Receptionist" },
+    { value: "Admin", label: "Admin" },
+    { value: "super Admin", label: "super Admin" },
   ];
 
   const handleSelectRole = (value) => {

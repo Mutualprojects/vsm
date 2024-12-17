@@ -58,7 +58,7 @@ async function USersign(req, res) {
       httpOnly: true, // Cookie cannot be accessed via JavaScript
       secure: process.env.NODE_ENV === "production", // Set to true in production
       sameSite: "None", // Necessary for cross-origin requests
-      maxAge: 3600000, // Token expiration time (1 hour)
+      // maxAge: 3600000, // Token expiration time (1 hour)
       // path: "/", // Ensure cookie is available across the entire domain
     };
 

@@ -13,7 +13,7 @@ import Addvisitorpage from "../pages/Addvisitorpage";
 import axios from "axios";
 import PlusRoundIcon from "@rsuite/icons/PlusRound";
 
-const Adminheader = ({ Getvisitors, getload }) => {
+const Sheader = ({ Getvisitors, getload }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -106,7 +106,7 @@ const Adminheader = ({ Getvisitors, getload }) => {
         navigate("/signin");
       }
 
-      if (getuserData.data.role !== "Admin") {
+      if (getuserData.data.role !== "super Admin") {
         navigate("/");
       }
 
@@ -166,7 +166,7 @@ const Adminheader = ({ Getvisitors, getload }) => {
         <header className="flex justify-between items-center mx-2 ">
           {/* Logo Section */}
           <div className=" w-44 h-16">
-            <Link to="/admindashboard">
+            <Link to="/superadmindashboard">
               <img
                 src={logo}
                 alt="Company Logo"
@@ -183,26 +183,28 @@ const Adminheader = ({ Getvisitors, getload }) => {
             {/* Navigation Links for Large Screens */}
             <div className="hidden lg:flex gap-10 items-center">
               <Link
-                to="/admindashboard"
+                to="/superadmindashboard"
                 className={
-                  location.pathname === "/admindashboard" ? "active-link" : ""
+                  location.pathname === "/superadmindashboard"
+                    ? "active-link"
+                    : ""
                 }
                 style={{ textDecoration: "none" }}
               >
                 Dashboard
               </Link>
               <Link
-                to="/adminemployees"
+                to="/semployees"
                 className={
-                  location.pathname === "/adminemployees" ? "active-link" : ""
+                  location.pathname === "/semployees" ? "active-link" : ""
                 }
                 style={{ textDecoration: "none" }}
               >
                 Employees
               </Link>
               <Link
-                to="/users"
-                className={location.pathname === "/users" ? "active-link" : ""}
+                to="/susers"
+                className={location.pathname === "/susers" ? "active-link" : ""}
                 style={{ textDecoration: "none" }}
               >
                 Users
@@ -251,7 +253,7 @@ const Adminheader = ({ Getvisitors, getload }) => {
                     }}
                   >
                     <Link
-                      to="/aprofile"
+                      to="/sprofile"
                       className=" text-decoration-none text-dark"
                     >
                       Profile
@@ -289,9 +291,9 @@ const Adminheader = ({ Getvisitors, getload }) => {
               >
                 <div className="flex flex-col gap-4">
                   <Link
-                    to="/admindashboard"
+                    to="/superadmindashboard"
                     className={
-                      location.pathname === "/admindashboard"
+                      location.pathname === "/superadmindashboard"
                         ? "active-link"
                         : ""
                     }
@@ -301,11 +303,9 @@ const Adminheader = ({ Getvisitors, getload }) => {
                     Dashboard
                   </Link>
                   <Link
-                    to="/adminemployees"
+                    to="/semployees"
                     className={
-                      location.pathname === "/adminemployees"
-                        ? "active-link"
-                        : ""
+                      location.pathname === "/semployees" ? "active-link" : ""
                     }
                     style={{ textDecoration: "none" }}
                     onClick={onCloseDrawer} // Close drawer after navigation
@@ -313,9 +313,9 @@ const Adminheader = ({ Getvisitors, getload }) => {
                     Employees
                   </Link>
                   <Link
-                    to="/users"
+                    to="/susers"
                     className={
-                      location.pathname === "/users" ? "active-link" : ""
+                      location.pathname === "/susers" ? "active-link" : ""
                     }
                     style={{ textDecoration: "none" }}
                   >
@@ -379,4 +379,4 @@ const Adminheader = ({ Getvisitors, getload }) => {
   );
 };
 
-export default Adminheader;
+export default Sheader;

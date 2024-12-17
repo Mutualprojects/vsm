@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Adminheader from "../Admindashboard/Adminheader";
 import { LoadingOutlined } from "@ant-design/icons";
+import Sheader from "./Sheader";
 
 // Custom Field Component for Formik
 const Field = ({ error, touched, ...rest }) => {
@@ -47,7 +48,7 @@ const validationSchema = Yup.object().shape({
     .oneOf([Yup.ref("password"), null], "Passwords must match"),
 });
 
-function Profilepage() {
+function Sprofile() {
   const user = useSelector((state) => state.user);
   const [cookies] = useCookies(["token"]);
   const navigate = useNavigate();
@@ -145,8 +146,8 @@ function Profilepage() {
   return (
     <>
       {contextHolder}
-      {role ? <Header /> : <Adminheader />}
       {/* <Adminheader /> */}
+      <Sheader />
       <div className="mt-28 pb-10">
         <div
           className="main_container flex justify-center items-center"
@@ -261,4 +262,4 @@ function Profilepage() {
   );
 }
 
-export default Profilepage;
+export default Sprofile;

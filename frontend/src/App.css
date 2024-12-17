@@ -53,5 +53,6 @@
   }
 }
 
-
-
+.ant-image-preview-icon {
+  color: white; /* Change to any color you need */
+}

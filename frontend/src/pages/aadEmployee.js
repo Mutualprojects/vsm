@@ -172,6 +172,7 @@ const Addemployee = ({ handleClose, Getemployees, updated }) => {
             type: "warning",
             content: "employee already exist",
           });
+          setSaveloader(false);
         }
 
         if (responseData.success) {
